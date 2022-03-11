@@ -1,20 +1,52 @@
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 #include <vector>
+#include <functional>
 
 namespace Matrix {
 
 template <typename DType>
 class Matrix {
 
+template <typename T> 
+friend Matrix<T> sigmoid(Matrix<T>&);
+
+template <typename T> 
+friend Matrix<DType> exp(Matrix<T>&);
+
+template <typename T> 
+friend Matrix<DType> tanh(Matrix<T>&);
+
+template <typename T, typename... DIMS>
+friend void reshape(Matrix<DType>&, DIMS...);
+
 public:
 
-    Matrix(DType, int);
+    Matrix<DType>(Matrix<DType>&);
 
-    template <typename... OTHER_DIMS>
-    Matrix(DType, int, OTHER_DIMS...);
+    template <typename... DIMS>
+    Matrix<DType>(DIMS...);
 
-    auto operator[](int);
+    template <typename... Index>
+    DType operator()(Index...);
+
+    Matrix<DType>& operator/=(DType&);
+    Matrix<DType>  operator/(DType&);
+
+    Matrix<DType>& operator+=(DType&);
+    Matrix<DType>  operator+(DType&);
+    Matrix<DType>& operator+=(Matrix<DType>&);
+    Matrix<DType>  operator+(Matrix<DType>&);
+
+    Matrix<DType>& operator-=(DType&);
+    Matrix<DType>  operator-(DType&);
+    Matrix<DType>& operator-=(Matrix<DType>&);
+    Matrix<DType>  operator-(Matrix<DType>&);
+
+    Matrix<DType>& operator*=(DType&);
+    Matrix<DType>  operator*(DType&);
+    Matrix<DType>& operator*=(Matrix<DType>&);
+    Matrix<DType>  operator*(Matrix<DType>&);
 
 //    ~Matrix();
 
@@ -23,44 +55,42 @@ public:
 
 private:
     std::vector<int> SHAPE; 
-    void* MATRIX;
-
-    template <typename... OTHER_DIMS>
-    Matrix<DType>* __allocate_matrix(int, int, OTHER_DIMS...);
+    int MATRIX_SIZE;
+    DType* MATRIX;
 };
 
 template <typename DType> 
 Matrix<DType> dot(Matrix<DType>, Matrix<DType>);
 
 template <typename DType> 
-Matrix<DType> sigmoid(Matrix<DType>);
+Matrix<DType> sigmoid(Matrix<DType>&);
 
 template <typename DType> 
-Matrix<DType> exp(Matrix<DType>);
+Matrix<DType> exp(Matrix<DType>&);
 
 template <typename DType> 
-Matrix<DType> tanh(Matrix<DType>);
+Matrix<DType> tanh(Matrix<DType>&);
 
-template <typename DType> 
-Matrix<DType> zero(Matrix<DType>);
+template <typename DType, typename... DIMS>
+Matrix<DType> zero(DIMS...);
 
-template <typename DType> 
-Matrix<DType> ones(Matrix<DType>);
+template <typename DType, typename... DIMS>
+Matrix<DType> ones(DIMS...);
 
-template <typename DType> 
-Matrix<DType> random(Matrix<DType>);
+template <typename DType, typename... DIMS>
+Matrix<DType> random(DIMS...);
 
-template <typename DType> 
-Matrix<DType> reshape(Matrix<DType>);
+template <typename DType, typename... DIMS>
+void reshape(Matrix<DType>&, DIMS...);
 
-template <typename DType> 
-Matrix<DType> squeeze(Matrix<DType>);
+//template <typename DType> 
+//Matrix<DType> squeeze(Matrix<DType>);
 
-template <typename DType> 
-Matrix<DType> inv(Matrix<DType>);
+// template <typename DType> 
+// Matrix<DType> inv(Matrix<DType>);
 
-template <typename DType> 
-double det(Matrix<DType>);
+// template <typename DType> 
+// double det(Matrix<DType>);
 
 } // end of Matrix namespace
 

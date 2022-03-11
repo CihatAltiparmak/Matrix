@@ -2,19 +2,34 @@
 #include <vector>
 #include "matrix.h"
 
+void print_m(Matrix::Matrix<double> A) {
+    
+    for (int x = 0; x < 4; x++) {
+        for (int y = 0; y < 3; y++)
+            std::cout << A(x, y) << " ";
+        std::cout << std::endl;
+    }
+}
+
+
 int main()
 {
-    Matrix::Matrix<int> A(3, 4, 3, 2, 2);
+    Matrix::Matrix<double> A(4, 3);
+    Matrix::Matrix<double> B(4, 3);
 
-//    int B = A[0];
+    Matrix::Matrix<double> C = A + B;
 
-//    std::cout << B << endl;
+    print_m(A);
+    print_m(B);
+    print_m(C);
 
-    A.print_shape();
+    std::cout << "------------------" << std::endl;
 
-    Matrix::Matrix<int> B = A[1];    
-    B.print_shape();
+    A += B;
+    A = Matrix::sigmoid(A);
 
+    print_m(A);
+    //B.print_shape();
 
     //int X = B[0][0][1];
 
