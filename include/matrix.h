@@ -12,23 +12,40 @@ template <typename T>
 friend Matrix<T> sigmoid(Matrix<T>&);
 
 template <typename T> 
-friend Matrix<DType> exp(Matrix<T>&);
+friend Matrix<T> exp(Matrix<T>&);
 
 template <typename T> 
-friend Matrix<DType> tanh(Matrix<T>&);
+friend Matrix<T> tanh(Matrix<T>&);
+
+template <typename T, typename... DIMS>
+friend Matrix<T> zeros(DIMS ...);
+
+template <typename T, typename... DIMS>
+friend Matrix<T> ones(DIMS ...);
+
+template <typename T, typename... DIMS>
+friend Matrix<T> random(DIMS ...);
 
 template <typename T, typename... DIMS>
 friend void reshape(Matrix<DType>&, DIMS...);
 
+template <typename T>
+friend Matrix<T> squeeze(Matrix<T>&);
+
+template <typename T>
+friend Matrix<T> identity(int);
+
 public:
 
-    Matrix<DType>(Matrix<DType>&);
+    Matrix<DType>(Matrix<DType>const&);
 
     template <typename... DIMS>
     Matrix<DType>(DIMS...);
 
     template <typename... Index>
-    DType operator()(Index...);
+    DType& operator()(Index...);
+
+    Matrix<DType>& operator=(Matrix<DType>const&);
 
     Matrix<DType>& operator/=(DType&);
     Matrix<DType>  operator/(DType&);
@@ -48,7 +65,7 @@ public:
     Matrix<DType>& operator*=(Matrix<DType>&);
     Matrix<DType>  operator*(Matrix<DType>&);
 
-//    ~Matrix();
+    ~Matrix();
 
     std::vector<int> get_shape();
     void print_shape();
@@ -72,7 +89,7 @@ template <typename DType>
 Matrix<DType> tanh(Matrix<DType>&);
 
 template <typename DType, typename... DIMS>
-Matrix<DType> zero(DIMS...);
+Matrix<DType> zeros(DIMS...);
 
 template <typename DType, typename... DIMS>
 Matrix<DType> ones(DIMS...);
@@ -83,8 +100,11 @@ Matrix<DType> random(DIMS...);
 template <typename DType, typename... DIMS>
 void reshape(Matrix<DType>&, DIMS...);
 
-//template <typename DType> 
-//Matrix<DType> squeeze(Matrix<DType>);
+template <typename DType> 
+Matrix<DType> squeeze(Matrix<DType>);
+
+template <typename DType>
+Matrix<DType> identity(int);
 
 // template <typename DType> 
 // Matrix<DType> inv(Matrix<DType>);

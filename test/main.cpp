@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 #include "matrix.h"
+#include "linalg/algorithms.h"
 
 void print_m(Matrix::Matrix<double> A) {
     
-    for (int x = 0; x < 4; x++) {
+    for (int x = 0; x < 3; x++) {
         for (int y = 0; y < 3; y++)
             std::cout << A(x, y) << " ";
         std::cout << std::endl;
@@ -14,32 +15,28 @@ void print_m(Matrix::Matrix<double> A) {
 
 int main()
 {
-    Matrix::Matrix<double> A(4, 3);
+    Matrix::Matrix<double> A(3, 3);
     Matrix::Matrix<double> B(4, 3);
 
-    Matrix::Matrix<double> C = A + B;
+    A(0, 0) = 100;
+    A(1, 0) = -100;
+    A(2, 0) = 0;
 
+    
     print_m(A);
-    print_m(B);
-    print_m(C);
+    
+    std::cout << "------------------------" << std::endl;
 
-    std::cout << "------------------" << std::endl;
 
-    A += B;
-    A = Matrix::sigmoid(A);
+    //Matrix::Matrix<double> I = Matrix::identity<double>(3);
 
-    print_m(A);
-    //B.print_shape();
+    Matrix::Matrix<double> invA = Matrix::inv(A);
+    print_m(invA);
 
-    //int X = B[0][0][1];
+    double ADet   = Matrix::det(A);
+    double invDet = Matrix::det(invA);
 
-    //cout << X[]
-    /*
-    std::cout << "SHAPE is : ";   
-    for (auto v : sp)
-        std::cout << v << "|";
-    std::cout << std::endl; 
-    */
+    std::cout << ADet << " : " << invDet << std::endl;
     return 0;
 
 }
