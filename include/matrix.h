@@ -106,14 +106,8 @@ Matrix<DType> squeeze(Matrix<DType>);
 template <typename DType>
 Matrix<DType> identity(int);
 
-// template <typename DType> 
-// Matrix<DType> inv(Matrix<DType>);
-
-// template <typename DType> 
-// double det(Matrix<DType>);
-
 } // end of Matrix namespace
 
-#include "../src/matrix.cpp"
+#include "../src/matrix.cpp" // FIXME How can we do this without adding matrix.cpp?
 
 #endif

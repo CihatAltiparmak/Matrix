@@ -1,17 +1,14 @@
 //#ifndef _MATRIX_H_
 //#define _MATRIX_H_
 
-//#include "matrix.h"
-//#include <math.h>
-//#include <vector>
+#include "matrix.h"
 
-#include <math.h>
-#include <ctime>
-#include <cstdlib>
-#include <memory>
-#include <iostream>
-#include <functional>
-#include <assert.h>
+#include <vector>   // for std::vector
+#include <math.h>   // for exp
+#include <ctime>    // for std::time
+#include <cstdlib>  // for srand, rand
+#include <iostream> // for std::cin, std::cout
+#include <assert.h> // for assert 
 
 namespace Matrix {
 
@@ -26,8 +23,11 @@ Matrix<DType>::Matrix(DIMS... dims)
     
     MATRIX_SIZE = 1;
 
-    for (auto dim : SHAPE) 
+    for (auto dim : SHAPE) {
+        assert(dim > 0 && 
+            "The dimensions of matrix cannot nonpozitive");
         MATRIX_SIZE *= dim;
+    }
 
     MATRIX = new DType[MATRIX_SIZE];
 
@@ -35,6 +35,20 @@ Matrix<DType>::Matrix(DIMS... dims)
         MATRIX[i] = i;
 }
 
+/*
+ * The copy constructor
+ *
+ * this constructor that gets another Matrix object deep-copies this object
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ * Matrix::Matrix<double> B(A);
+ *
+ * @param index the necessary integer indexes. If the number of indexes
+ * is larger than the size of matrix, it's raised assertion error. In addition
+ * if the indexes cause the out of bounds, it's raised assertion error.
+ * 
+ * @retval the element of the matrix in index
+ */
 template <typename DType>
 Matrix<DType>::Matrix(Matrix<DType>const& matrix_copy) {
     *this = matrix_copy;
@@ -113,16 +127,15 @@ DType& Matrix<DType>::operator()(Index... index) {
  * 
  * Matrix::Matrix<double> A(3, 3, 3);
  *
- * // [[1.0, 2.0, 3.0],
- * //  [4.0, 5.0, 6.0],
- * //  [7.0, 8.0, 9.0]]
+ *    [[1.0, 2.0, 3.0],
+ *     [4.0, 5.0, 6.0],
+ *     [7.0, 8.0, 9.0]]
  *
  * A /= 2;
  *
- * // [[0.5, 1.0, 1.5],
- * //  [2.0, 2.5, 3.0],
- * //  [3.5, 4.0, 4.5]]
- *
+ *    [[0.5, 1.0, 1.5],
+ *     [2.0, 2.5, 3.0],
+ *     [3.5, 4.0, 4.5]]
  *
  * @param val the divisor of the elements of the matrix
  * 
@@ -186,15 +199,15 @@ Matrix<DType> Matrix<DType>::operator/(DType& val) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * A += 0.5;
  *
- * // [[0.5, 1.5, 2.5],
- * //  [3.5, 4.5, 5.5],
- * //  [6.5, 7.5, 8.5]]
+ *    [[0.5, 1.5, 2.5],
+ *     [3.5, 4.5, 5.5],
+ *     [6.5, 7.5, 8.5]]
  *
  *
  * @param val the increasor of the elements of the matrix
@@ -218,16 +231,16 @@ Matrix<DType>& Matrix<DType>::operator+=(DType& val) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * B = A + 0.5;
  *
  * The content of B (the content of A doesn't change.) 
- * // [[0.5, 1.5, 2.5],
- * //  [3.5, 4.5, 5.5],
- * //  [6.5, 7.5, 8.5]]
+ *    [[0.5, 1.5, 2.5],
+ *     [3.5, 4.5, 5.5],
+ *     [6.5, 7.5, 8.5]]
  *
  * @param val the increasor of the elements of the matrix
  * 
@@ -252,17 +265,17 @@ Matrix<DType> Matrix<DType>::operator+(DType& val) {
  * 
  *     The matrix A       The matrix B
  *   -----------------   ----------------
- * // [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
- * //  [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
- * //  [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
  *
  * A += B;
  * 
  *     The matrix A
  *   -----------------
- * // [[0.0, 2.0, 4.0],
- * //  [6.0, 8.0, 10.0],
- * //  [12.0, 14.0, 16.0]]
+ *    [[0.0, 2.0, 4.0],
+ *     [6.0, 8.0, 10.0],
+ *     [12.0, 14.0, 16.0]]
  *
  *
  * @param A the other matrix which will add elementwisely
@@ -296,18 +309,17 @@ Matrix<DType>& Matrix<DType>::operator+=(Matrix<DType>& A) {
  *
  *     The matrix A       The matrix B
  *   -----------------   ----------------
- * // [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
- * //  [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
- * //  [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
  *
  * C = A + B;
  * 
  *     The matrix C (A and B don't change)
  *   -----------------
- * // [[0.0, 2.0, 4.0],
- * //  [6.0, 8.0, 10.0],
- * //  [12.0, 14.0, 16.0]]
- *
+ *    [[0.0, 2.0, 4.0],
+ *     [6.0, 8.0, 10.0],
+ *     [12.0, 14.0, 16.0]]
  *
  * @param A the other matrix which will add elementwisely
  * 
@@ -337,15 +349,15 @@ Matrix<DType> Matrix<DType>::operator+(Matrix<DType>& A) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * A -= 0.5;
  *
- * // [[-0.5, 0.5, 1.5],
- * //  [2.5, 3.5, 4.5],
- * //  [5.5, 6.5, 7.5]]
+ *    [[-0.5, 0.5, 1.5],
+ *     [2.5, 3.5, 4.5],
+ *     [5.5, 6.5, 7.5]]
  *
  *
  * @param val the decreasor of the elements of the matrix
@@ -370,16 +382,16 @@ Matrix<DType>& Matrix<DType>::operator-=(DType& val) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * B = A - 0.5;
  *
  * The content of B (the content of A doesn't change.) 
- * // [[-0.5, 0.5, 1.5],
- * //  [2.5, 3.5, 4.5],
- * //  [5.5, 6.5, 7.5]]
+ *    [[-0.5, 0.5, 1.5],
+ *     [2.5, 3.5, 4.5],
+ *     [5.5, 6.5, 7.5]]
  *
  * @param val the decreasor of the elements of the matrix
  * 
@@ -405,17 +417,17 @@ Matrix<DType> Matrix<DType>::operator-(DType& val) {
  * 
  *     The matrix A       The matrix B
  *   -----------------   ----------------
- * // [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
- * //  [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
- * //  [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
  *
  * A -= B;
  * 
  *     The matrix A
  *   -----------------
- * // [[0.0, 0.0, 0.0],
- * //  [0.0, 0.0, 0.0],
- * //  [0.0, 0.0, 0.0]]
+ *    [[0.0, 0.0, 0.0],
+ *     [0.0, 0.0, 0.0],
+ *     [0.0, 0.0, 0.0]]
  *
  *
  * @param A the other matrix which will add elementwisely
@@ -450,17 +462,17 @@ Matrix<DType>& Matrix<DType>::operator-=(Matrix<DType>& A) {
  *
  *     The matrix A       The matrix B
  *   -----------------   ----------------
- * // [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
- * //  [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
- * //  [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
  *
  * C = A + B;
  * 
  *     The matrix C (A and B don't change)
  *   -----------------
- * // [[0.0, 2.0, 4.0],
- * //  [6.0, 8.0, 10.0],
- * //  [12.0, 14.0, 16.0]]
+ *    [[0.0, 2.0, 4.0],
+ *     [6.0, 8.0, 10.0],
+ *     [12.0, 14.0, 16.0]]
  *
  *
  * @param A the other matrix which will substract elementwisely
@@ -491,15 +503,15 @@ Matrix<DType> Matrix<DType>::operator-(Matrix<DType>& A) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * A *= 0.5;
  *
- * // [[0.0, 0.5, 1.0],
- * //  [1.5, 2.0, 2.5],
- * //  [3.0, 3.5, 4.0]]
+ *    [[0.0, 0.5, 1.0],
+ *     [1.5, 2.0, 2.5],
+ *     [3.0, 3.5, 4.0]]
  *
  *
  * @param val the multiplicator of the elements of the matrix
@@ -524,16 +536,16 @@ Matrix<DType>& Matrix<DType>::operator*=(DType& val) {
  * 
  * Matrix::Matrix<double> A(3, 3);
  *
- * // [[0.0, 1.0, 2.0],
- * //  [3.0, 4.0, 5.0],
- * //  [6.0, 7.0, 8.0]]
+ *    [[0.0, 1.0, 2.0],
+ *     [3.0, 4.0, 5.0],
+ *     [6.0, 7.0, 8.0]]
  *
  * B = A * 0.5;
  *
  * The content of B (the content of A doesn't change.) 
- * // [[0.0, 0.5, 1.0],
- * //  [1.5, 2.0, 2.5],
- * //  [3.0, 3.5, 4.0]]
+ *    [[0.0, 0.5, 1.0],
+ *     [1.5, 2.0, 2.5],
+ *     [3.0, 3.5, 4.0]]
  *
  * @param val the multiplicator of the elements of the matrix
  * 
@@ -549,6 +561,34 @@ Matrix<DType> Matrix<DType>::operator*(DType& val) {
     return RESULT;
 }
 
+/*
+ * The operator overloading to multiply elements of the matrices elementwisely
+ *
+ * This operator overloading can used to substract the matrix to another matrix elementwisely
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ * Matrix::Matrix<double> B(3, 3);
+ * Matrix::Matrix<double> C(3, 3); 
+ *
+ *     The matrix A       The matrix B
+ *   -----------------   ----------------
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *
+ * C = A * B;
+ * 
+ *     The matrix C (A and B don't change)
+ *   -----------------
+ *    [[0.0, 1.0, 4.0],
+ *     [9.0, 16.0, 25.0],
+ *     [36.0, 49.0, 64.0]]
+ *
+ *
+ * @param A the other matrix which will multiply elementwisely
+ * 
+ * @retval the new matrix whose elemets are multiplied to another matrix elementwisely.
+ */
 template <typename DType>
 Matrix<DType>& Matrix<DType>::operator*=(Matrix<DType>& A) {
 
@@ -565,6 +605,34 @@ Matrix<DType>& Matrix<DType>::operator*=(Matrix<DType>& A) {
     return *this;
 }
 
+/*
+ * The operator overloading to multiply elements of the matrices elementwisely
+ *
+ * This operator overloading can used to multiply the matrix to another matrix elementwisely
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ * Matrix::Matrix<double> B(3, 3);
+ * Matrix::Matrix<double> C(3, 3); 
+ *
+ *     The matrix A       The matrix B
+ *   -----------------   ----------------
+ *    [[0.0, 1.0, 2.0],  [[0.0, 1.0, 2.0]
+ *     [3.0, 4.0, 5.0],   [3.0, 4.0, 5.0] 
+ *     [6.0, 7.0, 8.0]]   [6.0, 7.0, 8.0]]
+ *
+ * C = A * B;
+ * 
+ *     The matrix C (A and B don't change)
+ *   -----------------
+ *    [[0.0, 1.0, 4.0],
+ *     [9.0, 16.0, 25.0],
+ *     [36.0, 49.0, 64.0]]
+ *
+ *
+ * @param A the other matrix which will multiply elementwisely
+ * 
+ * @retval the new matrix whose elemets are multiplied to another matrix elementwisely.
+ */
 template <typename DType>
 Matrix<DType> Matrix<DType>::operator*(Matrix<DType>& A) {
 
@@ -581,7 +649,18 @@ Matrix<DType> Matrix<DType>::operator*(Matrix<DType>& A) {
     return RESULT;
 }
 
-
+/*
+ * The method that return the SHAPE of the matrix
+ *
+ * It returns the dimensions of the matrix as std::vector<int> format
+ * 
+ * Matrix<double> A(1, 2, 3);
+ * std::vector<int> shape = A.get_shape();
+ *
+ * @param no parameter
+ * 
+ * @retval the shape of the matrix
+ */
 template <typename DType>
 std::vector<int> Matrix<DType>::get_shape(){
     return SHAPE;
@@ -595,11 +674,38 @@ void Matrix<DType>::print_shape() {
     std::cout << ")" << std::endl;
 }
 
-/*  
- * @brief : gives matrix product of AB
- * @param  A
- * @param  B
- * @return res
+/*
+ * The function that do matrix multiplication
+ *
+ * This function gets two same type matrix and 
+ * returns the matrix multiplication of these two matrix
+ * If the shape of these matrix is not available for matrix 
+ * multiplication, it's raised assertion error
+ *
+ * This operator overloading can used to substract the matrix to another matrix elementwisely
+ * 
+ * Matrix::Matrix<double> A(3, 2);
+ * Matrix::Matrix<double> B(2, 3);
+ * Matrix::Matrix<double> C(3, 3); 
+ *
+ *     The matrix A       The matrix B
+ *   -----------------   ----------------
+ *    [[0, 1],            [[0, 1, 2]
+ *     [2, 3],             [3, 4, 5]]
+ *     [4, 5]]
+ *
+ * C = Matrix::dot(A, B);
+ * 
+ *     The matrix C
+ *   -----------------
+ *    [[3, 4, 5],
+ *     [9, 14, 19],
+ *     [15, 24, 33]]
+ *
+ *
+ * @param A the first matrix for matrix multiplication
+ * @param B the second matrix for matrix multiplication
+ * @retval the AB matrix (AB presents matrix multiplication).
  */
 template <typename DType>
 Matrix<DType> dot(Matrix<DType> A, Matrix<DType> B) {
@@ -621,10 +727,31 @@ Matrix<DType> dot(Matrix<DType> A, Matrix<DType> B) {
     return AB;
 }
 
-/* 
- * @brief : apply sigmoid func to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that returns new matrix which gets by applying 
+ * sigmoid function to the elemets of the old matrix. 
+ * FIXME: If the type of matrix is not double, it is raised assertion errors. it should be improved.
+ *
+ * SIGMOID_FUNCTION_FORMULA: sigmoid(x) = 1 / (1 + e^-x) 
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ *
+ *     The matrix A 
+ *   -----------------
+ *     [[1.0, 2.0, 3.0],
+ *      [4.0, 5.0, 6.0],
+ *      [7.0, 8.0, 9.0]]
+ *
+ * C = Matrix::sigmoid(A);
+ * 
+ *     The matrix C (A don't change)
+ *   -----------------
+ *     [[0.5, 0.731059, 0.880797],
+ *      [0.952574, 0.982014, 0.993307],
+ *      [0.997527, 0.999089, 0.999665]] 
+ *
+ * @param A the matrix whose elements are applied sigmoid function
+ * @retval the result matrix
  */
 template <typename DType>
 Matrix<DType> sigmoid(Matrix<DType>& A) {
@@ -643,11 +770,31 @@ Matrix<DType> sigmoid(Matrix<DType>& A) {
     return RESULT;
 }
 
-
-/* 
- * @brief : apply exponent func to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that returns new matrix which gets by applying 
+ * exp function to the elemets of the old matrix. 
+ * FIXME: If the type of matrix is not double, it is raised assertion errors. it should be improved.
+ *
+ * EXP_FUNCTION_FORMULA: EXP(x) = e^x 
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ *
+ *     The matrix A 
+ *   -----------------
+ *     [[1.0, 2.0, 3.0],
+ *      [4.0, 5.0, 6.0],
+ *      [7.0, 8.0, 9.0]]
+ *
+ * C = Matrix::exp(A);
+ * 
+ *     The matrix C (A don't change)
+ *   -----------------
+ *     [[1, 2.71828, 7.38906]
+ *      [20.0855, 54.5982, 148.413]
+ *      [403.429, 1096.63, 2980.96]] 
+ *
+ * @param A the matrix whose elements are applied exp function
+ * @retval the result matrix
  */
 template <typename DType>
 Matrix<DType> exp(Matrix<DType>& A) {
@@ -664,10 +811,31 @@ Matrix<DType> exp(Matrix<DType>& A) {
     return RESULT; 
 }
 
-/* 
- * @brief : apply tanh func to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that returns new matrix which gets by applying 
+ * exp function to the elemets of the old matrix. 
+ * FIXME: If the type of matrix is not double, it is raised assertion errors. it should be improved.
+ *
+ * TANH_FUNCTION_FORMULA: tanh(x) = (e^x - e^-x) / (e^x + e^-x)
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ *
+ *     The matrix A 
+ *   -----------------
+ *     [[1.0, 2.0, 3.0],
+ *      [4.0, 5.0, 6.0],
+ *      [7.0, 8.0, 9.0]]
+ *
+ * C = Matrix::tanh(A);
+ * 
+ *     The matrix C (A don't change)
+ *   -----------------
+ *     [[0, 0.761594, 0.964028]
+ *      [0.995055, 0.999329, 0.999909]
+ *      [0.999988, 0.999998, 1]]
+ *
+ * @param A the matrix whose elements are applied tanh function
+ * @retval the result matrix
  */
 template <typename DType>
 Matrix<DType> tanh(Matrix<DType>& A) {
@@ -686,10 +854,15 @@ Matrix<DType> tanh(Matrix<DType>& A) {
     return RESULT;
 }
 
-/* 
- * @brief : assign zero value to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that creates the matrix with zeros
+ * 
+ * Matrix::Matrix<double> A(3, 3);
+ *
+ * C = Matrix::zeros<double>(3, 3);
+ *
+ * @param dims the dimensions for the matrix with zeros
+ * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
 Matrix<DType> zeros(DIMS... dims) {
@@ -701,10 +874,13 @@ Matrix<DType> zeros(DIMS... dims) {
     return RESULT;
 }
 
-/* 
- * @brief : assign one value to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that creates the matrix with ones
+ * 
+ * Matrix<double> C = Matrix::ones<double>(3, 3);
+ *
+ * @param dims the dimensions for the matrix with ones
+ * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
 Matrix<DType> ones(DIMS... dims) {
@@ -714,10 +890,13 @@ Matrix<DType> ones(DIMS... dims) {
         RESULT.MATRIX[i] = 1;
 }
 
-/* 
- * @brief : assign random value to the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that creates the matrix with random values
+ * TODO: add the distribution option and improve the func with mersenne twist generator
+ * Matrix::Matrix<double> C = Matrix::random(3, 3);
+ *
+ * @param dims the dimensions for the matrix with random variables
+ * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
 Matrix<DType> random(DIMS... dims) {
@@ -729,30 +908,73 @@ Matrix<DType> random(DIMS... dims) {
         RESULT.MATRIX[i] = std::rand();
 }
 
-/* 
- * @brief : reshape the matrix elements
- * @param  A
- * @return res
+/*
+ * The function that change the shape of matrix
+ * TODO: add assertion that control the shape availability for matrix
+ * Matrix::Matrix<double> A(2, 4);
+ *
+ * Matrix::reshape(A, 2, 2, 2);
+ * 
+ *   the result A matrix
+ * -------------------------
+ *
+ * @param dims the new dimensions for the matrix
+ * @retval None
  */
 template <typename DType, typename... DIMS>
-Matrix<DType> reshape(Matrix<DType>& A, DIMS... dims) {
+void reshape(Matrix<DType>& A, DIMS... dims) {
+    std::vector<int> __dims = {dims...};
+    int __size = 1;
+
+    for (int i = 0; i < sizeof...(dims); i++)
+        __size *= __dims[i];
+
+    assert((__size != A.MATRIX_SIZE) && 
+        "The size for the new reshaped dimensions must be same as the matrix size!");
+
     A.SHAPE = {dims...};
 }
 
 /* 
- * @brief : get scalar value from matrices like [[1]], [[[1]]]
- * @param  A
- * @return res
+ * The function that squeeze the matrix.
+ *
+ * For example:
+ * 
+ *   the matrix A
+ * _________________
+ *  [[[[1], [2], [3]]],
+ *   [[[4], [5], [6]]],
+ *   [[[7], [8], [9]]]]
+ *
+ *   the new matrix after squeezing the matrix
+ * ______________________________________________
+ *   [[1, 2, 3],
+ *    [4, 5, 6],
+ *    [7, 8, 9]] 
+ *
+ * @param  A the matrix for squeezing
+ * @return the squeezed function
  */
-
 template <typename DType>
 Matrix<DType> squeeze(Matrix<DType>& A) {
     Matrix<DType> B(A);
-    B.SHAPE = {A.MATRIX_SIZE};
+
+    std::vector<int> new_dims;
+    for (auto dim : B.get_shape())
+        if (dim != 1)
+            new_dims.push_back(dim);
     
     return B;
 }
 
+/*
+ * The function that creates the identity matrix with given dimensions
+ * 
+ * Matrix::Matrix<double> C = Matrix::identity(3);
+ *
+ * @param dims the one of dimensions for the identity matrix
+ * @retval the result matrix
+ */
 template <typename DType>
 Matrix<DType> identity(int N) {
     Matrix<DType> I = zeros<DType>(N, N);
