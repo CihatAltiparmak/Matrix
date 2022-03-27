@@ -1,3 +1,27 @@
+/* 
+ * MIT License 
+ *  
+ * Copyright (c) 2022 CihatAltiparmak 
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */
+
 #include "matrix.h"
 
 namespace Matrix {
@@ -29,77 +53,103 @@ template <typename DType>
 Matrix<DType> inv(Matrix<DType> A) {
     auto __shape = A.get_shape();
 
-    assert((__shape.size() != 2) &&
+    assert((__shape.size() == 2) &&
         "The matrix must be the square matrix!");
     assert((__shape[0] == __shape[1]) &&
         "The matrix must be the square matrix!");
 
     int N = __shape[0];
 
-    Matrix<DType> I = identity<DType>(N);
+    Matrix<DType> invA = identity<DType>(N);
     Matrix<DType> B = A;
 
-    for (int x = 0; x < N; x++) {
-        for (int row = x + 1; row < N; row++) {
-            if (B(x, x) == 0.0) {
-                int bci, bri;
-                for (bri = x; bci < N; bci++)
-                    if (B(bri, x) != 0.0)
-                        break;
-
-                for (int bci = 0; bci < N; bci++) 
-                    swap(B[bri][bci], B[x][x]);
+    for (int pivot = 0; pivot < N; pivot++) {
+        if (B(pivot, pivot) == 0) {
+            bool is_pivot_found = false;
+            for (int x = pivot + 1; x < N; x++) {
+                if (B(x, pivot) != 0) {
+                    swap_rows(B, x, pivot);
+                    swap_rows(invA, x, pivot);
+                    is_pivot_found = true;
+                    break;
+                }
             }
-            // FIXME Gümledik
-            double e = B(row,x) / B(x, x);
-            B(row, x) = 0.0;
-
-            for (int col = x + 1; col < N; col++)
-                B(row, col) -= e * B(x, col);
-
-            for (int col = 0; col < N; col++)
-                I(row, col) -= e * I(x, col);
-        }
-    }
-
-    for (int x = N - 1; x >= 0; x--) {
-        double bxx = B(x, x);
+            if (!is_pivot_found) {
+                return zeros<DType>(N, N); 
+            }
         
-        for (int row = x - 1; row >= 0; row--) {
-            double e = B(row, x) / bxx;
-
-            for (int col = 0; col < N; col++)
-                I(row, col) -= e * I(x, col); 
+        }
+        
+        // normalizing the relating row
+        if (B(pivot, pivot) != 1) {
+            scale_row(invA, pivot, 1 / B(pivot, pivot));
+            scale_row(B, pivot, 1 / B(pivot, pivot));
         }
 
-        for (int col = 0; col < N; col++)
-            I(x, col) /= bxx;
-    }
-
-    return I;
-}
-
-template <typename DType>
-double det(Matrix<DType> A) {
-
-    int N = A.get_shape()[0];
-
-    double determinant = 1;
-    Matrix<DType> B = A;
-
-    for (int x = 0; x < N; x++) {
-        double bxx = B(x, x);
-
-        for (int row = x + 1; row < N; row++) {
-            double e = B(row,x) / bxx;
-
-            for (int col = x + 1; col < N; col++)
-                B(row, col) -= e * B(x, col);
+        for (int x = pivot + 1; x < N; x++) {
+            replace_rows(invA, pivot, x, -B(x, pivot));
+            replace_rows(B, pivot, x, -B(x, pivot));
         }
     }
 
     for (int x = N - 1; x >= 0; x--)
-        determinant *= B(x, x); 
+        for (int y = x - 1; y >= 0; y--)
+            replace_rows(invA, x, y, -B(x, y));
+
+    return invA;
+}
+
+/*
+ * The function that returns the determinant of the matrix
+ * 
+ * The matrix use row-reduction method to find determinant. 
+ * If the matrix is not square matrix, raise assertion error.
+ * @param A the matrix
+ * 
+ * @retval the determinant of the matrix A
+ */
+template <typename DType>
+double det(Matrix<DType> A) {
+    auto __shape = A.get_shape();
+
+    assert((__shape.size() == 2) &&
+        "The matrix must be the square matrix!");
+    assert((__shape[0] == __shape[1]) &&
+        "The matrix must be the square matrix!");
+
+    int N = __shape[0];
+
+    Matrix<DType> B = A;
+    double determinant = 1;
+
+    for (int pivot = 0; pivot < N; pivot++) { 
+        if (B(pivot, pivot) == 0) {
+            bool is_pivot_found = false;
+            for (int x = pivot + 1; x < N; x++) {
+                if (B(x, pivot) != 0) {
+                    swap_rows(B, x, pivot);
+                    is_pivot_found = true;
+                    break;
+                }
+            }
+            if (!is_pivot_found) {
+                return 0;
+            }
+        
+        }
+        
+        if (B(pivot, pivot) != 1) {
+            determinant *= B(pivot, pivot); 
+            scale_row(B, pivot, 1 / B(pivot, pivot)); 
+        }
+
+        for (int x = pivot + 1; x < N; x++) {
+            replace_rows(B, pivot, x, -B(x, pivot));
+        }
+    }
+
+    for (int x = 0; x < N; x++)
+        determinant *= B(x, x);
 
     return determinant;
 }

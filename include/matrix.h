@@ -106,6 +106,14 @@ Matrix<DType> squeeze(Matrix<DType>);
 template <typename DType>
 Matrix<DType> identity(int);
 
+template <typename DType>
+void swap_rows(Matrix<DType>&, int, int);
+
+template <typename DType>
+void replace_rows(Matrix<DType>&, int, int, int);
+
+template <typename DType>
+void scale_row(Matrix<DType>&, int, int);
 } // end of Matrix namespace
 
 #include "../src/matrix.cpp" // FIXME How can we do this without adding matrix.cpp?

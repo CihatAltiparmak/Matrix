@@ -1,14 +1,41 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2022 CihatAltiparmak
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+
 //#ifndef _MATRIX_H_
 //#define _MATRIX_H_
 
 #include "matrix.h"
 
-#include <vector>   // for std::vector
-#include <math.h>   // for exp
-#include <ctime>    // for std::time
-#include <cstdlib>  // for srand, rand
-#include <iostream> // for std::cin, std::cout
-#include <assert.h> // for assert 
+#include <vector>    // for std::vector
+#include <math.h>    // for exp
+#include <ctime>     // for std::time
+#include <cstdlib>   // for srand, rand
+#include <iostream>  // for std::cin, std::cout
+#include <assert.h>  // for assert 
+#include <algorithm> // for swap
 
 namespace Matrix {
 
@@ -984,5 +1011,45 @@ Matrix<DType> identity(int N) {
 
     return I;
 }
+
+template <typename DType>
+void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
+    // assert 0 < row < N
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    for (int i = 0; i < M; i++)
+        std::swap(A(first_row, i), A(second_row, i));
+}
+
+template <typename DType>
+void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar) {
+    // assert 0 < row < N
+    // assert scalar is not zero
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    for (int i = 0; i < M; i++)
+        A(second_row, i) += A(first_row, i) * scalar;
+}
+
+template <typename DType>
+void scale_row(Matrix<DType>& A, int row, double scalar) {
+    // assert 0 < row < N
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    for (int i = 0; i < M; i++)
+        A(row, i) *= scalar;
+}
+
+/*
+template<typename DType>
+Matrix<DType> augment(Matrix<DType> A, Matrix<DType> B) {
+}
+*/
 
 } // end of namespace
