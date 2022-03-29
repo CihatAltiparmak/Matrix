@@ -1,8 +1,8 @@
 #My Matrix Library
 
-http://ForTheBadge.com/images/badges/built-with-love.svg
+![love](http://ForTheBadge.com/images/badges/built-with-love.svg)
 
-https://badge-size.herokuapp.com/CihatAltiparmak/Matrix/
+![size](https://badge-size.herokuapp.com/CihatAltiparmak/Matrix/)
 
 This matrix library is the library that create matrix easly and perform various matrix operations for cpp. 
 
