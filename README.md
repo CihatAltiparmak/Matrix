@@ -1,15 +1,93 @@
-My Matrix Library
+#My Matrix Library
 
-This matrix library is the tool that create matrix ealsy and perform various matrix operations for cpp. 
+http://ForTheBadge.com/images/badges/built-with-love.svg
+
+https://badge-size.herokuapp.com/CihatAltiparmak/Matrix/
+
+This matrix library is the library that create matrix easly and perform various matrix operations for cpp. 
 
 # Table of contents
 
 # Installation
-This Project is still under construction. It is going to be added installation option (probably cmake).
-Now, you can just compile the main.cpp in test directory.
+This Project is still under construction.
+But it is set **instalation with cmake**.
+
+To install the Matrix library, just run
+```
+$ git clone https://github.com/CihatAltiparmak/Matrix.git
+$ cd Matrix
+$ mkdir build && cd build
+$ cmake ..
+$ sudo make install
+```
+
+These commands will be installed to `/usr/local/include` and `/usr/local/lib`
+
+To see files that are installed, run
+```
+$ cat install_manifest.txt
+```
+To uninstall this library
+```
+$ xarg rm < install_manifest.txt
+```
+
+To use this library in your project, you can compile like this
+
+main.cpp
+```cpp
+#include <iostream>
+#include <vector>
+
+#include <atrix/matrix.h>
+#include <atrix/linalg/algorithms.h>
+#include <atrix/linalg/decompositions.h>
+
+void print_m(Matrix::Matrix<double> A) {
+    
+    for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 3; y++)
+            std::cout << A(x, y) << " ";
+        std::cout << std::endl;
+    }
+}
+
+void print_m1(Matrix::Matrix<double> A) {
+    
+    for (int x = 0; x < 3; x++)
+        std::cout << A(x) << " ";
+    std::cout << std::endl;
+}
+
+int main()
+{
+
+    Matrix::Matrix<double> A(3, 3);
+    Matrix::Matrix<double> C = Matrix::zeros<double>(3, 3);
+     
+    print_m(A);
+    std::cout << "*********************" << std::endl;
+
+    std::vector<Matrix::Matrix<double>> X = Matrix::get_column_vectors(A);
+
+    for (auto v : X) {
+        print_m1(v);
+        std::cout << "###########" << std::endl;
+    }
+
+    A(0, 0) = 100;
+    A(1, 0) = -100;
+    A(2, 0) = 0;
+
+    return 0;
+
+}
+```
+
+Compile command
 
 ```shell
-g++ test/main.cpp  -I ./include -o test/main -std=c++17 -g
+g++ main.cpp -o main -std=c++17 -g
 ```
 
 # Documentation
@@ -26,7 +104,7 @@ You can open issue here or you can mail to me.
 It is going to be added soon
 
 # Code Contributors
-CihatAltiparmak
+![GitHub Contributors Image](https://contrib.rocks/image?repo=CihatAltiparmak/Matrix)
 
 # License
 This repo is under MIT LICENSE
