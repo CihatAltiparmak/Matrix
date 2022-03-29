@@ -1,7 +1,6 @@
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 #include <vector>
-#include <functional>
 
 namespace Matrix {
 
@@ -114,8 +113,11 @@ void replace_rows(Matrix<DType>&, int, int, int);
 
 template <typename DType>
 void scale_row(Matrix<DType>&, int, int);
+
+template <typename DType>
+std::vector<Matrix<DType>> get_column_vectors(Matrix<DType>);
 } // end of Matrix namespace
 
-#include "../src/matrix.cpp" // FIXME How can we do this without adding matrix.cpp?
+#include "matrix.cpp" // FIXME How can we do this without adding matrix.cpp?
 
 #endif

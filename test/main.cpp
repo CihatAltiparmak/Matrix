@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
-#include "matrix.h"
-#include "linalg/algorithms.h"
+
+#include "../src/matrix.h"
+#include "../src/linalg/algorithms.h"
+#include "../src/linalg/decompositions.h"
 
 void print_m(Matrix::Matrix<double> A) {
     
@@ -19,6 +21,31 @@ int main()
     Matrix::Matrix<double> A(3, 3);
     Matrix::Matrix<double> C = Matrix::zeros<double>(3, 3);
      
+    print_m(A);
+    std::cout << "*********************" << std::endl;
+
+
+    A(0, 0) = 100;
+    A(1, 0) = -100;
+    A(2, 0) = 0;
+
+    std::vector<Matrix::Matrix<double>> res = Matrix::LU(A);
+    std::cout << res.size() << std::endl;
+    print_m(res[0]);
+    std::cout << "*********************" << std::endl;
+    print_m(res[1]);
+    std::cout << "*********************" << std::endl;    
+
+    Matrix::Matrix<double> K = Matrix::dot(res[0], res[1]);
+    print_m(K) ;
+
+    /*
+    Matrix::Matrix<double> K = Matrix::dot(A, A);
+
+    print_m(A);
+    std::cout << "*********************" << std::endl;
+
+    print_m(K); 
 
     A(0, 0) = 100;
     A(1, 0) = -100;
@@ -32,7 +59,7 @@ int main()
     double invDet = Matrix::det(invA);
 
     std::cout << ADet << " : " << invDet << std::endl;
-
+    */
     return 0;
 
 }

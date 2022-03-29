@@ -24,8 +24,8 @@
 
 
 
-//#ifndef _MATRIX_H_
-//#define _MATRIX_H_
+#ifndef _MATRIX_CPP_
+#define _MATRIX_CPP_
 
 #include "matrix.h"
 
@@ -737,18 +737,18 @@ void Matrix<DType>::print_shape() {
 template <typename DType>
 Matrix<DType> dot(Matrix<DType> A, Matrix<DType> B) {
 
-    auto a_shape = A.get_size();
-    auto b_shape = B.get_size();
+    auto a_shape = A.get_shape();
+    auto b_shape = B.get_shape();
 
     assert(a_shape[1] == b_shape[0] &&
         "The matrix multiplication is impossible");
 
-    Matrix<DType> AB(a_shape[0], b_shape[1]);
+    Matrix<DType> AB = zeros<DType>(a_shape[0], b_shape[1]);
 
     for (int x = 0; x < a_shape[0]; x++) {
         for (int y = 0; y < b_shape[1]; y++)
             for (int i = 0; i < a_shape[1]; i++)
-                AB[x][y] = A[x][i] * B[i][y];
+                AB(x, y) += A(x, i) * B(i, y);
     }
 
     return AB;
@@ -937,7 +937,7 @@ Matrix<DType> random(DIMS... dims) {
 
 /*
  * The function that change the shape of matrix
- * TODO: add assertion that control the shape availability for matrix
+ *
  * Matrix::Matrix<double> A(2, 4);
  *
  * Matrix::reshape(A, 2, 2, 2);
@@ -953,8 +953,11 @@ void reshape(Matrix<DType>& A, DIMS... dims) {
     std::vector<int> __dims = {dims...};
     int __size = 1;
 
-    for (int i = 0; i < sizeof...(dims); i++)
+    for (int i = 0; i < sizeof...(dims); i++) {
+        assert(__dims[i] >= 0 &&
+            "The dimensions are not negative !");
         __size *= __dims[i];
+    }
 
     assert((__size != A.MATRIX_SIZE) && 
         "The size for the new reshaped dimensions must be same as the matrix size!");
@@ -1014,10 +1017,15 @@ Matrix<DType> identity(int N) {
 
 template <typename DType>
 void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
-    // assert 0 < row < N
     auto __shape = A.get_shape();
     int N = __shape[0];
     int M = __shape[1];
+
+    assert(((first_row < N) && (second_row < M)) &&
+        "Invalid row index!");
+
+    assert(((first_row >= 0) && (second_row >= 0)) &&
+        "Invalid row index!");
 
     for (int i = 0; i < M; i++)
         std::swap(A(first_row, i), A(second_row, i));
@@ -1025,11 +1033,15 @@ void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
 
 template <typename DType>
 void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar) {
-    // assert 0 < row < N
-    // assert scalar is not zero
     auto __shape = A.get_shape();
     int N = __shape[0];
     int M = __shape[1];
+
+    assert(((first_row < N) && (second_row < M)) &&
+        "Invalid row index!");
+
+    assert(((first_row >= 0) && (second_row >= 0)) &&
+        "Invalid row index!");
 
     for (int i = 0; i < M; i++)
         A(second_row, i) += A(first_row, i) * scalar;
@@ -1037,14 +1049,56 @@ void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar
 
 template <typename DType>
 void scale_row(Matrix<DType>& A, int row, double scalar) {
-    // assert 0 < row < N
+    
     auto __shape = A.get_shape();
     int N = __shape[0];
     int M = __shape[1];
 
+    assert((row < N && row >= 0) &&
+        "Invalid row index!");
+
     for (int i = 0; i < M; i++)
         A(row, i) *= scalar;
 }
+
+template <typename DType>
+std::vector<Matrix<DType>> get_column_vectors(Matrix<DType> A) {
+    // assert there exists any dimension in matrix
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    std::vector<Matrix<DType>> column_vectors;
+
+    for (int i = 0; i < M; i++) {
+        Matrix<DType> C(N);
+        for (int x = 0; x < N; x++)
+            C(x) = A(x, i);
+
+        column_vectors.push_back(C);
+    }
+    
+    return column_vectors;
+}
+
+/*
+template <typename DType>
+std::vector<DType> get_row_vectors(Matrix<DType> A) {
+    // assert there exists any dimension in matrix
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    std::vector<Matrix<DType>> row_vectors(N, Matrix<DType>(M));
+
+    for (int i = 0; i < N; i++) {
+        for (int x = 0; x < M; x++)
+            row_vectors[i][x] = A(i, x);
+    }
+    
+    return row_vectors;
+}
+*/
 
 /*
 template<typename DType>
@@ -1053,3 +1107,5 @@ Matrix<DType> augment(Matrix<DType> A, Matrix<DType> B) {
 */
 
 } // end of namespace
+
+#endif // end of _MATRIX_CPP_

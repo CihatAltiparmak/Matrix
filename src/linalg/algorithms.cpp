@@ -22,7 +22,10 @@
  * SOFTWARE. 
  */
 
-#include "matrix.h"
+#ifndef _LINALG_ALGORITHMS_CPP_
+#define _LINALG_ALGORITHMS_CPP_
+
+#include "../matrix.h"
 
 namespace Matrix {
 
@@ -154,4 +157,40 @@ double det(Matrix<DType> A) {
     return determinant;
 }
 
+/*
+template <typename DType>
+Matrix<DType> gram_schmidt(Matrix<DType> V) {
+
+    auto __shape = V.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    std::vector<Matrix<DType>> v = get_column_vectors<DType>(V);
+    std::vector<Matrix<DType>> u(v);
+    std::vector<double> u_norms(M - 1); 
+
+    for (int m = 1; m < M; m++) {
+        u_norms[m - 1] = (v[m -1] * v[m - 1])(0);
+        double un = std::sqrt(u_norms[m - 1]);
+        u[m - 1] /= un;
+        for (int i = 0; i < m - 1; i++) {
+            double ui_vm_dot = (u[i] * v[m])(0) / u_norms[i];
+            Matrix<DType> rm_vector = u[i] * ui_vm_dot;
+            u[m] -= rm_vector;
+        }
+    }
+
+    Matrix<DType> RESULT_MATRIX(N, M);
+    for (int col = 0; col < M; col++) {
+        for (int row = 0; row < M; row++)
+            RESULT_MATRIX(row, col) = u[col](row);
+    }
+
+    return RESULT_MATRIX;
+
+}
+*/
 }// end of namespace
+
+#endif // end of _LINALG_ALGORITHMS_CPP_
+
