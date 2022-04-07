@@ -5,6 +5,8 @@ project(atrix)
 add_library(atrix SHARED
     src/matrix.h
     src/matrix.cpp
+    src/vector.h
+    src/vector.cpp
     src/linalg/algorithms.h
     src/linalg/algorithms.cpp
     src/linalg/decompositions.h

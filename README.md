@@ -1,16 +1,14 @@
-#My Matrix Library
+# My Matrix Library
 
 ![love](http://ForTheBadge.com/images/badges/built-with-love.svg)
 
-![size](https://badge-size.herokuapp.com/CihatAltiparmak/Matrix/)
-
-This matrix library is the library that create matrix easly and perform various matrix operations for cpp. 
+This matrix library is the library that create matrix easily and perform various matrix operations for cpp. 
 
 # Table of contents
 
 # Installation
 This Project is still under construction.
-But it is set **instalation with cmake**.
+But it is set **installation with cmake**.
 
 To install the Matrix library, just run
 ```
@@ -21,7 +19,7 @@ $ cmake ..
 $ sudo make install
 ```
 
-These commands will be installed to `/usr/local/include` and `/usr/local/lib`
+These commands will setup  Matrix library to `/usr/local/include` and `/usr/local/lib`
 
 To see files that are installed, run
 ```
@@ -115,7 +113,7 @@ This repo is under MIT LICENSE
 * Add assertions for some functions.
 * Add augment function for operations like [A | I] here
 * Refactor the function inv there if you can augment function.
-* You can the functions for eigen values.
+* You can add the functions for eigen values.
 * Edit the wiki of this project.
 * Edit the README.md of this project.
 * Add test option for this repo (insufficient)

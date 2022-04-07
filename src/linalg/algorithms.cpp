@@ -190,6 +190,8 @@ Matrix<DType> gram_schmidt(Matrix<DType> V) {
 
 }
 */
+
+
 }// end of namespace
 
 #endif // end of _LINALG_ALGORITHMS_CPP_

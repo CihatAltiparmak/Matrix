@@ -993,7 +993,11 @@ Matrix<DType> squeeze(Matrix<DType>& A) {
     for (auto dim : B.get_shape())
         if (dim != 1)
             new_dims.push_back(dim);
-    
+
+    if (dims.size() == 0)
+        dims.push_back(1);
+
+    reshape(B, new_dims); 
     return B;
 }
 
@@ -1061,43 +1065,7 @@ void scale_row(Matrix<DType>& A, int row, double scalar) {
         A(row, i) *= scalar;
 }
 
-template <typename DType>
-std::vector<Matrix<DType>> get_column_vectors(Matrix<DType> A) {
-    // assert there exists any dimension in matrix
-    auto __shape = A.get_shape();
-    int N = __shape[0];
-    int M = __shape[1];
-
-    std::vector<Matrix<DType>> column_vectors;
-
-    for (int i = 0; i < M; i++) {
-        Matrix<DType> C(N);
-        for (int x = 0; x < N; x++)
-            C(x) = A(x, i);
-
-        column_vectors.push_back(C);
-    }
-    
-    return column_vectors;
-}
-
 /*
-template <typename DType>
-std::vector<DType> get_row_vectors(Matrix<DType> A) {
-    // assert there exists any dimension in matrix
-    auto __shape = A.get_shape();
-    int N = __shape[0];
-    int M = __shape[1];
-
-    std::vector<Matrix<DType>> row_vectors(N, Matrix<DType>(M));
-
-    for (int i = 0; i < N; i++) {
-        for (int x = 0; x < M; x++)
-            row_vectors[i][x] = A(i, x);
-    }
-    
-    return row_vectors;
-}
 */
 
 /*
