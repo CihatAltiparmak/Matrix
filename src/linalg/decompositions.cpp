@@ -65,7 +65,7 @@ template <typename DType>
 std::vector<Matrix<DType>> QR(Matrix<DType> A) {
     auto __shape = A.get_shape();
 
-    std::vector<Vector<DType>> a_vectors = get_column_vectors(A);
+    std::vector<Vector<DType>> a_vectors = to_column_vectors(A);
     std::vector<Vector<DType>> q_vectors = gram_schmidt(a_vectors);
 
     Matrix<DType> Q = from_column_vectors(q_vectors);

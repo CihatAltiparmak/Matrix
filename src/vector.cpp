@@ -38,27 +38,6 @@ Vector<DType>::Vector(Matrix<DType> A)
 }
 
 template <typename DType>
-double Vector<DType>::norm(bool is_squared) {
-
-    auto __shape = this->get_shape();
-    double norm_of_vector = 0.0;
-
-
-    if (__shape[0] != 1) {
-        for (int i = 0; i < __shape[0]; i++)
-            norm_of_vector += (*this)(i, 0) * (*this)(i, 0);
-    } else {
-        for (int i = 0; i < __shape[1]; i++)
-            norm_of_vector += (*this)(0, i) * (*this)(0, i); 
-    }   
-
-    if (is_squared)
-        return std::sqrt(norm_of_vector);
-    else
-        return norm_of_vector;
-}
-
-template <typename DType>
 double vector_dot(Vector<DType> u, Vector<DType> v) {
 
     auto u_shape = u.get_shape();
@@ -79,7 +58,7 @@ double vector_dot(Vector<DType> u, Vector<DType> v) {
 }
 
 template <typename DType>
-std::vector<Vector<DType>> get_column_vectors(Matrix<DType> A) {
+std::vector<Vector<DType>> to_column_vectors(Matrix<DType> A) {
     // assert 0 <= K < N
 
     auto __shape = A.get_shape();
@@ -99,7 +78,7 @@ std::vector<Vector<DType>> get_column_vectors(Matrix<DType> A) {
 }
 
 template <typename DType>
-std::vector<Vector<DType>> get_row_vectors(Matrix<DType> A) {
+std::vector<Vector<DType>> to_row_vectors(Matrix<DType> A) {
     // assert 0 <= K < N
 
     auto __shape = A.get_shape();
@@ -128,6 +107,20 @@ Matrix<DType> from_column_vectors(std::vector<Vector<DType>> column_vectors) {
     for (int i = 0; i < N; i++)
         for (int j = 0; j < M; j++)
             RESULT_MATRIX(i, j) = column_vectors[j](i, 0);
+
+    return RESULT_MATRIX;
+}
+
+template <typename DType>
+Matrix<DType> from_row_vectors(std::vector<Vector<DType>> row_vectors) {
+    // assert vector shapes are same format and row_vectors is not empty
+    int N = row_vectors.size();
+    int M = row_vectors[0].get_matrix_size();
+
+    Matrix<DType> RESULT_MATRIX(N, M);
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < M; j++)
+            RESULT_MATRIX(i, j) = row_vectors[i](j, 0);
 
     return RESULT_MATRIX;
 }
