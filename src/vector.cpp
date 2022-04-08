@@ -37,7 +37,6 @@ Vector<DType>::Vector(Matrix<DType> A)
         "At least one dimesion of vector must be 1");
 }
 
-
 template <typename DType>
 double Vector<DType>::norm(bool is_squared) {
 
@@ -57,6 +56,26 @@ double Vector<DType>::norm(bool is_squared) {
         return std::sqrt(norm_of_vector);
     else
         return norm_of_vector;
+}
+
+template <typename DType>
+double vector_dot(Vector<DType> u, Vector<DType> v) {
+
+    auto u_shape = u.get_shape();
+    auto v_shape = v.get_shape();
+
+    // assert u_shape = v_shape
+    
+    double result = 0;
+    if (u_shape[0] != 1) {
+        for (int i = 0; i < u_shape[0]; i++)
+            result += u(i, 0) * v(i, 0);
+    } else {
+        for (int i = 0; i < u_shape[1]; i++)
+            result += u(0, i) * v(0, i);
+    }
+
+    return result;
 }
 
 template <typename DType>
@@ -97,6 +116,20 @@ std::vector<Vector<DType>> get_row_vectors(Matrix<DType> A) {
     }
 
     return row_vectors;
+}
+
+template <typename DType>
+Matrix<DType> from_column_vectors(std::vector<Vector<DType>> column_vectors) {
+    // assert vector shapes are same format and column_vectors is not empty
+    int N = column_vectors[0].get_matrix_size();
+    int M = column_vectors.size();
+
+    Matrix<DType> RESULT_MATRIX(N, M);
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < M; j++)
+            RESULT_MATRIX(i, j) = column_vectors[j](i, 0);
+
+    return RESULT_MATRIX;
 }
 
 } // end of namespace Matrix

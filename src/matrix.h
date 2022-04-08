@@ -46,21 +46,21 @@ public:
 
     Matrix<DType>& operator=(Matrix<DType>const&);
 
-    Matrix<DType>& operator/=(DType&);
-    Matrix<DType>  operator/(DType&);
+    Matrix<DType>& operator/=(DType);
+    Matrix<DType>  operator/(DType);
 
-    Matrix<DType>& operator+=(DType&);
-    Matrix<DType>  operator+(DType&);
+    Matrix<DType>& operator+=(DType);
+    Matrix<DType>  operator+(DType);
     Matrix<DType>& operator+=(Matrix<DType>&);
     Matrix<DType>  operator+(Matrix<DType>&);
 
-    Matrix<DType>& operator-=(DType&);
-    Matrix<DType>  operator-(DType&);
+    Matrix<DType>& operator-=(DType);
+    Matrix<DType>  operator-(DType);
     Matrix<DType>& operator-=(Matrix<DType>&);
     Matrix<DType>  operator-(Matrix<DType>&);
 
-    Matrix<DType>& operator*=(DType&);
-    Matrix<DType>  operator*(DType&);
+    Matrix<DType>& operator*=(DType);
+    Matrix<DType>  operator*(DType);
     Matrix<DType>& operator*=(Matrix<DType>&);
     Matrix<DType>  operator*(Matrix<DType>&);
 
@@ -68,7 +68,7 @@ public:
 
     std::vector<int> get_shape();
     void print_shape();
-
+    int get_matrix_size();
 private:
     std::vector<int> SHAPE; 
     int MATRIX_SIZE;

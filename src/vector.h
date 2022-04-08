@@ -14,15 +14,21 @@ class Vector: public Matrix<DType> {
         template <typename... DIMS>
         Vector<DType>(DIMS...);
         Vector<DType>(Matrix<DType>);
-
+        
         double norm(bool);
 };
+
+template <typename DType>
+double vector_dot(Vector<DType>, Vector<DType>);
 
 template <typename DType>
 std::vector<Vector<DType>> get_column_vectors(Matrix<DType>);
 
 template <typename DType>
 std::vector<Vector<DType>> get_row_vectors(Matrix<DType>);
+
+template <typename DType>
+Matrix<DType> from_column_vectors(std::vector<Vector<DType>>);
 
 }
 

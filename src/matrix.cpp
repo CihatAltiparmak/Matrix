@@ -169,7 +169,7 @@ DType& Matrix<DType>::operator()(Index... index) {
  * @retval the same matrix whose elemets divided by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator/=(DType& val) {
+Matrix<DType>& Matrix<DType>::operator/=(DType val) {
 
     assert((val != 0) && 
         "The divisor cannot be zero!");
@@ -207,7 +207,7 @@ Matrix<DType>& Matrix<DType>::operator/=(DType& val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator/(DType& val) {
+Matrix<DType> Matrix<DType>::operator/(DType val) {
     
     assert((val != 0) && 
         "The divisor cannot be zero!");
@@ -242,7 +242,7 @@ Matrix<DType> Matrix<DType>::operator/(DType& val) {
  * @retval the same matrix whose elemets are increased by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator+=(DType& val) {
+Matrix<DType>& Matrix<DType>::operator+=(DType val) {
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] += val;
 
@@ -275,7 +275,7 @@ Matrix<DType>& Matrix<DType>::operator+=(DType& val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator+(DType& val) {
+Matrix<DType> Matrix<DType>::operator+(DType val) {
     Matrix<DType> RESULT(*this);
     RESULT += val;
     
@@ -392,7 +392,7 @@ Matrix<DType> Matrix<DType>::operator+(Matrix<DType>& A) {
  * @retval the same matrix whose elemets are decreased by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator-=(DType& val) { 
+Matrix<DType>& Matrix<DType>::operator-=(DType val) { 
 
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] -= val;
@@ -426,7 +426,7 @@ Matrix<DType>& Matrix<DType>::operator-=(DType& val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator-(DType& val) {
+Matrix<DType> Matrix<DType>::operator-(DType val) {
     
     Matrix<DType> RESULT(*this);
     RESULT -= val;
@@ -546,7 +546,7 @@ Matrix<DType> Matrix<DType>::operator-(Matrix<DType>& A) {
  * @retval the same matrix whose elemets are multiplicator by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator*=(DType& val) {
+Matrix<DType>& Matrix<DType>::operator*=(DType val) {
 
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] *= val;
@@ -580,7 +580,7 @@ Matrix<DType>& Matrix<DType>::operator*=(DType& val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator*(DType& val) {
+Matrix<DType> Matrix<DType>::operator*(DType val) {
 
     Matrix<DType> RESULT(*this);
     RESULT *= val;
@@ -694,12 +694,19 @@ std::vector<int> Matrix<DType>::get_shape(){
 }
 
 template <typename DType>
+int Matrix<DType>::get_matrix_size() {
+    return MATRIX_SIZE;
+}
+
+template <typename DType>
 void Matrix<DType>::print_shape() {
     std::cout << "(";
     for (auto v : SHAPE)
         std::cout << v << ", ";
     std::cout << ")" << std::endl;
 }
+
+
 
 /*
  * The function that do matrix multiplication
@@ -994,8 +1001,8 @@ Matrix<DType> squeeze(Matrix<DType>& A) {
         if (dim != 1)
             new_dims.push_back(dim);
 
-    if (dims.size() == 0)
-        dims.push_back(1);
+    if (new_dims.size() == 0)
+        new_dims.push_back(1);
 
     reshape(B, new_dims); 
     return B;

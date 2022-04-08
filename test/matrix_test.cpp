@@ -29,6 +29,9 @@ int main() {
     cout << "-------------" << endl;
 
     C(2, 2) = A(0, 2);
+
+    C += 1000;
+
     print_matrix(C);
     
 }

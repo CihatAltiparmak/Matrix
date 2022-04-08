@@ -2,6 +2,7 @@
 #define _LINALG_ALGORITHMS_H_
 
 #include "../matrix.h"
+#include "../vector.h"
 
 namespace Matrix {
 
@@ -11,8 +12,8 @@ Matrix<DType> inv(Matrix<DType> A);
 template <typename DType>
 double det(Matrix<DType> A);
 
-//template <typename DType>
-//Matrix<DType> gram_schmidt(Matrix<DType>);
+template <typename DType>
+std::vector<Vector<DType>> gram_schmidt(Matrix<DType>);
 
 } // end of namespace 
 

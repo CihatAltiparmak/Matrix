@@ -26,6 +26,7 @@
 #define _LINALG_ALGORITHMS_CPP_
 
 #include "../matrix.h"
+#include "../vector.h"
 
 namespace Matrix {
 
@@ -157,39 +158,32 @@ double det(Matrix<DType> A) {
     return determinant;
 }
 
-/*
 template <typename DType>
-Matrix<DType> gram_schmidt(Matrix<DType> V) {
+std::vector<Vector<DType>> gram_schmidt(std::vector<Vector<DType>> v) {
+    // assert the v vectors are column vector
 
-    auto __shape = V.get_shape();
-    int N = __shape[0];
-    int M = __shape[1];
+    int N = v.size();
 
-    std::vector<Matrix<DType>> v = get_column_vectors<DType>(V);
-    std::vector<Matrix<DType>> u(v);
-    std::vector<double> u_norms(M - 1); 
+    std::vector<Vector<DType>> orthagonalized_vectors;
+    std::vector<double> uu_dot;
 
-    for (int m = 1; m < M; m++) {
-        u_norms[m - 1] = (v[m -1] * v[m - 1])(0);
-        double un = std::sqrt(u_norms[m - 1]);
-        u[m - 1] /= un;
-        for (int i = 0; i < m - 1; i++) {
-            double ui_vm_dot = (u[i] * v[m])(0) / u_norms[i];
-            Matrix<DType> rm_vector = u[i] * ui_vm_dot;
-            u[m] -= rm_vector;
+    for (int i = 0; i < N; i++) {
+        Vector<DType> u = v[i];
+        
+        for (int j = 0; j < i; j++) {
+            double co = vector_dot(orthagonalized_vectors[j], v[i]) / uu_dot[j];
+            Vector<DType> x = orthagonalized_vectors[j] * co;
+            u -= x;
         }
+        uu_dot.push_back(vector_dot(u, u));
+        orthagonalized_vectors.push_back(u); 
     }
 
-    Matrix<DType> RESULT_MATRIX(N, M);
-    for (int col = 0; col < M; col++) {
-        for (int row = 0; row < M; row++)
-            RESULT_MATRIX(row, col) = u[col](row);
-    }
+    for (int i = 0; i < N; i++)
+        orthagonalized_vectors[i] /= std::sqrt(uu_dot[i]);
 
-    return RESULT_MATRIX;
-
+    return orthagonalized_vectors;
 }
-*/
 
 
 }// end of namespace

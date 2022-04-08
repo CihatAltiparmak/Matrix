@@ -22,11 +22,13 @@
  * SOFTWARE.
  */
 
-#ifndef _LINALG_DECOMPOSITIONS_
-#define _LINALG_DECOMPOSITIONS_
+#ifndef _LINALG_DECOMPOSITIONS_CPP_
+#define _LINALG_DECOMPOSITIONS_CPP_
 
 #include "../matrix.h"
+#include "../vector.h"
 #include "../linalg/algorithms.h"
+
 #include <vector>
 #include <iostream>
 
@@ -59,7 +61,24 @@ std::vector<Matrix<DType>> LU(Matrix<DType> A) {
     return RESULT;
 }
 
-//std::vector<Matrix<DType>> QR(Matrix<DType> A) {}
+template <typename DType>
+std::vector<Matrix<DType>> QR(Matrix<DType> A) {
+    auto __shape = A.get_shape();
+
+    std::vector<Vector<DType>> a_vectors = get_column_vectors(A);
+    std::vector<Vector<DType>> q_vectors = gram_schmidt(a_vectors);
+
+    Matrix<DType> Q = from_column_vectors(q_vectors);
+    Matrix<DType> R = zeros<DType>(__shape[1], __shape[1]); 
+
+    for (int i = 0; i < __shape[1]; i++) {
+        for (int j = i; j < __shape[1]; j++) {
+            R(i, j) = vector_dot(q_vectors[i], a_vectors[j]);
+        }
+    }
+
+    return {Q, R};
+}
 
 //std::vector<Matrix<DType>> cholesky(Matrix<DType> A) {}
 
@@ -68,4 +87,4 @@ std::vector<Matrix<DType>> LU(Matrix<DType> A) {
 //std::vector<Matrix<DType>> SVD(Matrix<DType> A) {}
 }
 
-#endif // end of _LINALG_DECOMPOSITIONS
+#endif // end of _LINALG_DECOMPOSITIONS_CPP_
