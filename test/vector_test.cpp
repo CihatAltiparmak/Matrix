@@ -41,7 +41,6 @@ int main() {
     Matrix::Vector<double> u(A);
     print_matrix(u); 
 
-    cout << "The norm of u: " << u.norm(false) << endl; 
     cout << "--------------------" << endl;
 
     Matrix::Vector<double> B = v + u;
@@ -58,7 +57,7 @@ int main() {
     cout << "---------------- TEST --------------------" << endl;
 
     Matrix::Matrix<double> D(5, 6);
-    vector<Matrix::Vector<double>> row_vecs = Matrix::get_row_vectors(D);
+    vector<Matrix::Vector<double>> row_vecs = Matrix::to_row_vectors(D);
 
     for (int i = 0; i < 5; i++) {
         print_matrix(row_vecs[i]);

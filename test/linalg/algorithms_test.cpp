@@ -40,7 +40,7 @@ int main() {
     A(1, 0) = 47;
     A(2, 0) = -7;
 
-    std::vector<Matrix::Vector<double>> a_vec = Matrix::get_column_vectors(A);
+    std::vector<Matrix::Vector<double>> a_vec = Matrix::to_column_vectors(A);
     std::vector<Matrix::Vector<double>> o_vec = Matrix::gram_schmidt(a_vec);
 
     /*
