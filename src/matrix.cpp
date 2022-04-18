@@ -922,6 +922,8 @@ Matrix<DType> ones(DIMS... dims) {
     
     for (int i = 0; i < RESULT.MATRIX_SIZE; i++)
         RESULT.MATRIX[i] = 1;
+
+    return RESULT;
 }
 
 /*
@@ -955,21 +957,20 @@ Matrix<DType> random(DIMS... dims) {
  * @param dims the new dimensions for the matrix
  * @retval None
  */
-template <typename DType, typename... DIMS>
-void reshape(Matrix<DType>& A, DIMS... dims) {
-    std::vector<int> __dims = {dims...};
+template <typename DType>
+void reshape(Matrix<DType>& A, std::vector<int> dims) {
     int __size = 1;
 
-    for (int i = 0; i < sizeof...(dims); i++) {
-        assert(__dims[i] >= 0 &&
-            "The dimensions are not negative !");
-        __size *= __dims[i];
+    for (int i = 0; i < dims.size(); i++) {
+        assert(dims[i] > 0 &&
+            "The dimensions are not nonpositive !");
+        __size *= dims[i];
     }
 
-    assert((__size != A.MATRIX_SIZE) && 
+    assert((__size == A.MATRIX_SIZE) && 
         "The size for the new reshaped dimensions must be same as the matrix size!");
 
-    A.SHAPE = {dims...};
+    A.SHAPE = dims;
 }
 
 /* 
@@ -993,7 +994,7 @@ void reshape(Matrix<DType>& A, DIMS... dims) {
  * @return the squeezed function
  */
 template <typename DType>
-Matrix<DType> squeeze(Matrix<DType>& A) {
+Matrix<DType> squeeze(Matrix<DType> A) {
     Matrix<DType> B(A);
 
     std::vector<int> new_dims;

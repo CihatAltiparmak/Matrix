@@ -78,14 +78,10 @@ bool function_tester(Matrix::Matrix<T> newA, Matrix::Matrix<T> oldA, std::functi
 
 }
 
-TEST(ALGORITHMS, INV) {
+TEST(DECOMPOSITIONS, LU) {
 
 }
 
-TEST(ALGORITHMS, DET) {
-
-}
-
-TEST(ALGORITHMS, GRAM_SCHMIDT) {
+TEST(DECOMPOSITIONS, QR) {
 
 }

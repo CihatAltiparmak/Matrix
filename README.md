@@ -87,9 +87,25 @@ Compile command
 ```shell
 g++ main.cpp -o main -std=c++17 -g
 ```
+# Testing
+The unit testing of this project is not finished yet. But the unit testings for `matrix.h` and `vector.h` are ok. To test this project,
+
+```shell
+$ cd test
+$ mkdir build && cd build
+$ cmake ..
+$ make
+```
+
+Now, we can run test executable files.
+
+```shell
+$ ./matrix_test
+$ ./vector_test 
+```
 
 # Documentation
-The matrix library documentation is only inside source code of this repo now. But the wiki of this repo is going to be edited for documentation.
+The matrix library documentation is only inside source code of this repo now. But the wiki of this repo is going to be edited for documentation. In addition, you can look into `test` directory.
 
 
 # Benchmarks

@@ -25,11 +25,11 @@ friend Matrix<T> ones(DIMS ...);
 template <typename T, typename... DIMS>
 friend Matrix<T> random(DIMS ...);
 
-template <typename T, typename... DIMS>
-friend void reshape(Matrix<DType>&, DIMS...);
+template <typename T>
+friend void reshape(Matrix<T>&, std::vector<int>);
 
 template <typename T>
-friend Matrix<T> squeeze(Matrix<T>&);
+friend Matrix<T> squeeze(Matrix<T>);
 
 template <typename T>
 friend Matrix<T> identity(int);
@@ -96,8 +96,8 @@ Matrix<DType> ones(DIMS...);
 template <typename DType, typename... DIMS>
 Matrix<DType> random(DIMS...);
 
-template <typename DType, typename... DIMS>
-void reshape(Matrix<DType>&, DIMS...);
+template <typename DType>
+void reshape(Matrix<DType>&, std::vector<int>);
 
 template <typename DType> 
 Matrix<DType> squeeze(Matrix<DType>);
@@ -109,7 +109,7 @@ template <typename DType>
 void swap_rows(Matrix<DType>&, int, int);
 
 template <typename DType>
-void replace_rows(Matrix<DType>&, int, int, int);
+void replace_rows(Matrix<DType>&, int, int, double);
 
 template <typename DType>
 void scale_row(Matrix<DType>&, int, int);
