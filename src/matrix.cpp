@@ -1033,7 +1033,7 @@ void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
     int N = __shape[0];
     int M = __shape[1];
 
-    assert(((first_row < N) && (second_row < M)) &&
+    assert(((first_row < N) && (second_row < N)) &&
         "Invalid row index!");
 
     assert(((first_row >= 0) && (second_row >= 0)) &&
@@ -1049,7 +1049,7 @@ void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar
     int N = __shape[0];
     int M = __shape[1];
 
-    assert(((first_row < N) && (second_row < M)) &&
+    assert(((first_row < N) && (second_row < N)) &&
         "Invalid row index!");
 
     assert(((first_row >= 0) && (second_row >= 0)) &&
@@ -1073,6 +1073,20 @@ void scale_row(Matrix<DType>& A, int row, double scalar) {
         A(row, i) *= scalar;
 }
 
+template <typename DType>
+Matrix<DType> transpoze(Matrix<DType> A) {
+
+    int N = A.get_shape()[0];
+    int M = A.get_shape()[1];
+
+    Matrix<DType> RESULT(M, N);
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < M; j++)
+            RESULT(j, i) = A(i, j);
+
+    return RESULT;
+}
 /*
 */
 

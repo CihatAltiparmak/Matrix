@@ -114,6 +114,9 @@ void replace_rows(Matrix<DType>&, int, int, double);
 template <typename DType>
 void scale_row(Matrix<DType>&, int, int);
 
+template <typename DType>
+Matrix<DType> transpoze(Matrix<DType>);
+
 } // end of Matrix namespace
 
 #include "matrix.cpp" // FIXME How can we do this without adding matrix.cpp?

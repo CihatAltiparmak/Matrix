@@ -32,10 +32,10 @@ namespace Matrix {
     template <typename DType>
     std::vector<Matrix<DType>> QR(Matrix<DType>);
 
-    #if 0
     template <typename DType>
     std::vector<Matrix<DType>> cholesky(Matrix<DType>); 
 
+    #if 0
     // be careful
     template <typename DType>
     std::vector<Matrix<DType>> eigen(Matrix<DType>);

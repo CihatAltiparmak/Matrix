@@ -109,7 +109,21 @@ The matrix library documentation is only inside source code of this repo now. Bu
 
 
 # Benchmarks
-It is going to be added soon.
+The benchmarks are not finished yet, but now, there is just the benchmark of `matrix.cpp`. For benchmarking
+
+```shell
+$ cd benchmark
+$ mkdir build && cd build
+$ cmake ..
+$ make
+```
+
+And finally,
+
+```shell
+$ ./matrix_benchmark
+```
+The benchmarkings take a long time.
 
 # Getting Help
 You can open issue here or you can mail to me.

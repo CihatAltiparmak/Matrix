@@ -34,6 +34,8 @@
 
 namespace Matrix {
 
+
+// TODO: apply do little algorithm
 template <typename DType>
 std::vector<Matrix<DType>> LU(Matrix<DType> A) {
     auto __shape = A.get_shape();
@@ -80,7 +82,48 @@ std::vector<Matrix<DType>> QR(Matrix<DType> A) {
     return {Q, R};
 }
 
-//std::vector<Matrix<DType>> cholesky(Matrix<DType> A) {}
+template <typename DType>
+void print_m(Matrix<DType> A) {
+    
+    for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 3; y++)
+            std::cout << A(x, y) << " ";
+        std::cout << std::endl;
+    }
+}
+
+template <typename DType>
+std::vector<Matrix<DType>> cholesky(Matrix<DType> A) {
+
+    // assert A is two dimensional matrix
+    // assert A is square and symetric matrix
+
+    auto __shape = A.get_shape();
+    int N = __shape[0];
+    int M = __shape[1];
+
+    Matrix<DType> L(A);
+    Matrix<DType> LT(A);
+
+    for (int j = 0; j < N; j++) {
+        for (int k = 0; k < j; k++)
+            L(j, j) -= L(j, k) * L(j, k);
+
+        L(j, j) = std::sqrt(L(j, j));
+
+        for (int i = N - 1; i > j; i--) {
+            for (int k = 0; k < j; k++)
+                L(i, j) -= L(i, k) * L(j, k);
+            L(i, j) /= L(j, j);
+            L(j, i) = 0;
+        }
+        
+    }
+
+    LT = transpoze(L);
+
+    return {L, LT};
+}
 
 //std::vector<Matrix<DType>> eigen(Matrix<DType> A) {}
 
