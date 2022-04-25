@@ -83,16 +83,6 @@ std::vector<Matrix<DType>> QR(Matrix<DType> A) {
 }
 
 template <typename DType>
-void print_m(Matrix<DType> A) {
-    
-    for (int x = 0; x < 3; x++) {
-        for (int y = 0; y < 3; y++)
-            std::cout << A(x, y) << " ";
-        std::cout << std::endl;
-    }
-}
-
-template <typename DType>
 std::vector<Matrix<DType>> cholesky(Matrix<DType> A) {
 
     // assert A is two dimensional matrix
