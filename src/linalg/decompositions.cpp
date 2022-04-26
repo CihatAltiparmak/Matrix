@@ -34,31 +34,38 @@
 
 namespace Matrix {
 
-
-// TODO: apply do little algorithm
 template <typename DType>
 std::vector<Matrix<DType>> LU(Matrix<DType> A) {
     auto __shape = A.get_shape();
     int N = __shape[0];
 
     Matrix<DType> L = identity<DType>(N);
-    Matrix<DType> U = A;
+    Matrix<DType> U = zeros<DType>(N, N);
 
     std::vector<Matrix<DType>> RESULT;
 
-    for (int pivot = 0; pivot < N - 1; pivot++) {
-        if (U(pivot, pivot) == 0)
-            return RESULT;
+    for(int i = 0; i < N; i++)
+        U(0, i) = A(0, i);
 
-        for (int x = pivot + 1; x < N; x++) {
-            double co = U(x, pivot) / U(pivot, pivot);
-            replace_rows(U, pivot, x, -co);
-            replace_rows(L, pivot, x, -co);
-            U(x, pivot) = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i > j) {
+                L(i, j) = A(i, j);
+                for (int k = 0; k < std::min(i, j); k++)
+                    L(i, j) -= L(i, k) * U(k, j);
+
+                if (U(j, j) == 0) // to control whether there exists LU decomposition of A matrix (but i am not sure it's correct way) 
+                    return RESULT;
+                L(i, j) /= U(j, j);
+            } else {
+                U(i, j) = A(i, j);
+                for (int k = 0; k < std::min(i, j); k++) 
+                    U(i, j) -= L(i, k) * U(k, j);
+            }
         }
     }
 
-    RESULT.push_back(inv(L));
+    RESULT.push_back(L);
     RESULT.push_back(U);
     return RESULT;
 }
