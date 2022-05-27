@@ -27,47 +27,69 @@
 
 #include "../matrix.h"
 #include "../vector.h"
-#include "../linalg/algorithms.h"
+#include "../errors.h"
+#include "../linalg/utils.h"
 
 #include <vector>
 #include <iostream>
 
 namespace Matrix {
 
+// reference : http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap31.htm
 template <typename DType>
-std::vector<Matrix<DType>> LU(Matrix<DType> A) {
+std::vector<Matrix<DType>> LUP(Matrix<DType> A) {
     auto __shape = A.get_shape();
     int N = __shape[0];
 
-    Matrix<DType> L = identity<DType>(N);
-    Matrix<DType> U = zeros<DType>(N, N);
+    std::vector<int> permutation(N);
 
-    std::vector<Matrix<DType>> RESULT;
+    for (int i = 0; i < N; i++)
+        permutation[i] = i;
 
-    for(int i = 0; i < N; i++)
-        U(0, i) = A(0, i);
 
     for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (i > j) {
-                L(i, j) = A(i, j);
-                for (int k = 0; k < std::min(i, j); k++)
-                    L(i, j) -= L(i, k) * U(k, j);
-
-                if (U(j, j) == 0) // to control whether there exists LU decomposition of A matrix (but i am not sure it's correct way) 
-                    return RESULT;
-                L(i, j) /= U(j, j);
-            } else {
-                U(i, j) = A(i, j);
-                for (int k = 0; k < std::min(i, j); k++) 
-                    U(i, j) -= L(i, k) * U(k, j);
+        DType max_row = std::numeric_limits<DType>::min();
+        int max_row_index = i;
+        for (int k = i; k < N; k++) {
+            if (std::abs(A(k, i)) > max_row) {
+                max_row = std::abs(A(k, i));
+                max_row_index = i;
             }
+        }
+
+        if (max_row == std::numeric_limits<DType>::min())  {
+            throw DecompositionError();
+        }
+
+        std::swap(permutation[i], permutation[max_row_index]);
+        swap_rows(A, i, max_row_index);
+
+        for (int k = i + 1; k < N; k++) {
+            A(k, i) /= A(i, i);
+
+            for (int l = i + 1; l < N; l++)
+                A(k, l) -= A(k, i) * A(i, l); 
         }
     }
 
-    RESULT.push_back(L);
-    RESULT.push_back(U);
-    return RESULT;
+    Matrix<DType> L = identity<DType>(N);
+    Matrix<DType> U(N, N);
+    Matrix<DType> P = zeros<DType>(N, N);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i > j)
+                L(i, j) = A(i, j);
+            else
+                U(i, j) = A(i, j);
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        P(i, permutation[i]) = 1;
+    }
+
+    return {L, U, transpoze(P)};
 }
 
 template <typename DType>

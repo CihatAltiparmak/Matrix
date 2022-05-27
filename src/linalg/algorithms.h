@@ -27,6 +27,7 @@
 
 #include "../matrix.h"
 #include "../vector.h"
+#include "../linalg/utils.h" // for gram_schmidt function
 
 namespace Matrix {
 
@@ -35,9 +36,6 @@ Matrix<DType> inv(Matrix<DType> A);
 
 template <typename DType>
 double det(Matrix<DType> A);
-
-template <typename DType>
-std::vector<Vector<DType>> gram_schmidt(Matrix<DType>);
 
 } // end of namespace 
 

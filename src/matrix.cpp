@@ -942,6 +942,8 @@ Matrix<DType> random(DIMS... dims) {
     // be careful 
     for (int i = 0; i < RESULT.MATRIX_SIZE; i++)
         RESULT.MATRIX[i] = std::rand();
+
+    return RESULT;
 }
 
 /*
@@ -1087,8 +1089,6 @@ Matrix<DType> transpoze(Matrix<DType> A) {
 
     return RESULT;
 }
-/*
-*/
 
 /*
 template<typename DType>

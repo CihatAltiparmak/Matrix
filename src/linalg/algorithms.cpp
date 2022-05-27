@@ -27,6 +27,8 @@
 
 #include "../matrix.h"
 #include "../vector.h"
+#include "../linalg/decompositions.h"
+#include "../errors.h"
 
 namespace Matrix {
 
@@ -34,20 +36,22 @@ namespace Matrix {
  * The function that returns the inverse of the given matrix.
  * 
  * The function returns the inverse of the given matrix if there exists.
- * If the matrix is singular matrix(it has no its inverse) returns the matrix with zeros.
+ * If the matrix is singular matrix(it has no its inverse) it is raised a error. 
  *
- * The algorithm runs folowing. But the main important trick is the transformation [A | I] -> [I | invA] 
- * I presents identity matrix
+ * The algorithm runs following. But the main important trick is the LUP decomposition.
  *
- * Firstly, we create a identity matrix that is available for A. we deep-copy the matrix A to the matrix B.
- * Then, we start first row and first column (the up-left side of the matrix, shortly the point (0, 0) according to computer :))
- * We select this value. After that, we do row-reductions that zero the all values in column of where we are. 
- * We apply this row reductions for I matrix. Then the current row and current column are increased by 1. (to forward diagonally)
- * In the end, the B matrix turn into upper-triangular matrix.
- * Now, we start the last row and last column. We apply row reductions to zero the all elements above column where we are. 
- * This row-reductions applies for I matrix.
- *
- * Finally, A turn into I, I turns into invA.
+ * If there exists inverse of A matrix, the matrix A is able to be factorized by LUP decomposition. 
+ * Otherwise, While LUP decomposition, it is raised that the matrix A cannot be decomposed by LUP decomposition.
+ * For more information, please look at https://github.com/CihatAltiparmak/Matrix/blob/main/src/linalg/decompositions.cpp#L38-L93  
+ * 
+ * Firstly, the matrix A is factorized by LUP decomposition. After that, we find their inverses of L, U
+ * and P matrices. 
+ * 
+ * Finally, we make matrix multiplication like this. 
+ * 
+ * inv(A) = inv(P^-1 LU) 
+ *        = inv(U) inv(L) inv(P^-1) 
+ *        = inv(U) inv(L) P
  * 
  * @param A the matrix
  * 
@@ -62,45 +66,50 @@ Matrix<DType> inv(Matrix<DType> A) {
     assert((__shape[0] == __shape[1]) &&
         "The matrix must be the square matrix!");
 
-    int N = __shape[0];
+    try {
+        auto lup = LUP(A);
 
-    Matrix<DType> invA = identity<DType>(N);
-    Matrix<DType> B = A;
+        int N = __shape[0];
 
-    for (int pivot = 0; pivot < N; pivot++) {
-        if (B(pivot, pivot) == 0) {
-            bool is_pivot_found = false;
-            for (int x = pivot + 1; x < N; x++) {
-                if (B(x, pivot) != 0) {
-                    swap_rows(B, x, pivot);
-                    swap_rows(invA, x, pivot);
-                    is_pivot_found = true;
-                    break;
+        Matrix<DType> invL = identity<DType>(N);
+        Matrix<DType> invU = identity<DType>(N);
+
+        // to find the inverse of L in LUP decomposition
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+
+                for (int k = 0; k <= i; k++) {
+                    invL(j, k) -= invL(i, k) * lup[0](j, i);
                 }
             }
-            if (!is_pivot_found) {
-                return zeros<DType>(N, N); 
+        }
+
+        // to find the inverse of U in LUP decomposition
+        // firstly, scale the rows of U matrix by its diagonal
+        for (int i = 0; i < N; i++) { 
+            double divisior = lup[1](i, i);
+            invU(i, i) /= divisior;
+            for (int j = i; j < N; j++) {
+                lup[1](i, j) /= divisior;
             }
-        
-        }
-        
-        // normalizing the relating row
-        if (B(pivot, pivot) != 1) {
-            scale_row(invA, pivot, 1 / B(pivot, pivot));
-            scale_row(B, pivot, 1 / B(pivot, pivot));
         }
 
-        for (int x = pivot + 1; x < N; x++) {
-            replace_rows(invA, pivot, x, -B(x, pivot));
-            replace_rows(B, pivot, x, -B(x, pivot));
+        for (int i = N - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+                for (int k = N - 1; k >= i; k--) {
+                    invU(j, k) -= invU(i, k) * lup[1](j, i);
+                }
+            }
         }
-    }
 
-    for (int x = N - 1; x >= 0; x--)
-        for (int y = x - 1; y >= 0; y--)
-            replace_rows(invA, x, y, -B(x, y));
+        // P is permutation matrix, therefore, P^-1 = P^T
+        // If PA = LU => A = P^T LU, so, A^-1 = U^-1 L^-1 P
+        Matrix<DType> invA = dot(dot(invU, invL), transpoze(lup[2]));
 
-    return invA;
+        return invA;
+    } catch (DecompositionError& e) {
+        throw InverseOfMatrixNotFoundError();
+    } 
 }
 
 /*
@@ -121,70 +130,19 @@ double det(Matrix<DType> A) {
     assert((__shape[0] == __shape[1]) &&
         "The matrix must be the square matrix!");
 
-    int N = __shape[0];
+    try {
+        auto U = LUP(A)[1];
+        int N = __shape[0];
+        double determinant = 1;
 
-    Matrix<DType> B = A;
-    double determinant = 1;
+        for (int i = 0; i < N; i++)
+            determinant *= U(i, i);
 
-    for (int pivot = 0; pivot < N; pivot++) { 
-        if (B(pivot, pivot) == 0) {
-            bool is_pivot_found = false;
-            for (int x = pivot + 1; x < N; x++) {
-                if (B(x, pivot) != 0) {
-                    swap_rows(B, x, pivot);
-                    is_pivot_found = true;
-                    break;
-                }
-            }
-            if (!is_pivot_found) {
-                return 0;
-            }
-        
-        }
-        
-        if (B(pivot, pivot) != 1) {
-            determinant *= B(pivot, pivot); 
-            scale_row(B, pivot, 1 / B(pivot, pivot)); 
-        }
-
-        for (int x = pivot + 1; x < N; x++) {
-            replace_rows(B, pivot, x, -B(x, pivot));
-        }
+        return determinant;
+    } catch (DecompositionError& e) {
+        return 0;
     }
-
-    for (int x = 0; x < N; x++)
-        determinant *= B(x, x);
-
-    return determinant;
 }
-
-template <typename DType>
-std::vector<Vector<DType>> gram_schmidt(std::vector<Vector<DType>> v) {
-    // assert the v vectors are column vector
-
-    int N = v.size();
-
-    std::vector<Vector<DType>> orthagonalized_vectors;
-    std::vector<double> uu_dot;
-
-    for (int i = 0; i < N; i++) {
-        Vector<DType> u = v[i];
-        
-        for (int j = 0; j < i; j++) {
-            double co = vector_dot(orthagonalized_vectors[j], v[i]) / uu_dot[j];
-            Vector<DType> x = orthagonalized_vectors[j] * co;
-            u -= x;
-        }
-        uu_dot.push_back(vector_dot(u, u));
-        orthagonalized_vectors.push_back(u); 
-    }
-
-    for (int i = 0; i < N; i++)
-        orthagonalized_vectors[i] /= std::sqrt(uu_dot[i]);
-
-    return orthagonalized_vectors;
-}
-
 
 }// end of namespace
 

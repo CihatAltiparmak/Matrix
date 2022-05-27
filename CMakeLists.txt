@@ -11,6 +11,9 @@ add_library(atrix SHARED
     src/linalg/algorithms.cpp
     src/linalg/decompositions.h
     src/linalg/decompositions.cpp
+    src/linalg/utils.h 
+    src/linalg/utils.cpp
+    src/errors.h
 )
 
 install (TARGETS atrix 
