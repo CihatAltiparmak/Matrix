@@ -57,7 +57,7 @@ std::vector<Matrix<DType>> LUP(Matrix<DType> A) {
             }
         }
 
-        if (max_row == std::numeric_limits<DType>::min())  {
+        if (max_row == 0)  {
             throw DecompositionError();
         }
 
