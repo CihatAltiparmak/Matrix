@@ -42,7 +42,7 @@ main.cpp
 #include <atrix/linalg/decompositions.h>
 
 void print_m(Matrix::Matrix<double> A) {
-    
+
     for (int x = 0; x < 3; x++) {
         for (int y = 0; y < 3; y++)
             std::cout << A(x, y) << " ";
@@ -50,10 +50,10 @@ void print_m(Matrix::Matrix<double> A) {
     }
 }
 
-void print_m1(Matrix::Matrix<double> A) {
-    
+void print_m1(Matrix::Vector<double> A) {
+
     for (int x = 0; x < 3; x++)
-        std::cout << A(x) << " ";
+        std::cout << A(x, 0) << " ";
     std::cout << std::endl;
 }
 
@@ -62,11 +62,11 @@ int main()
 
     Matrix::Matrix<double> A(3, 3);
     Matrix::Matrix<double> C = Matrix::zeros<double>(3, 3);
-     
+
     print_m(A);
     std::cout << "*********************" << std::endl;
 
-    std::vector<Matrix::Matrix<double>> X = Matrix::get_column_vectors(A);
+    auto X = Matrix::to_column_vectors(A);
 
     for (auto v : X) {
         print_m1(v);
