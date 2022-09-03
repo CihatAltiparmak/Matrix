@@ -46,23 +46,23 @@ public:
 
     Matrix<DType>& operator=(Matrix<DType>const&);
 
-    Matrix<DType>& operator/=(DType);
-    Matrix<DType>  operator/(DType);
+    Matrix<DType>& operator/=(const DType);
+    Matrix<DType>  operator/(const DType);
 
-    Matrix<DType>& operator+=(DType);
-    Matrix<DType>  operator+(DType);
-    Matrix<DType>& operator+=(Matrix<DType>&);
-    Matrix<DType>  operator+(Matrix<DType>&);
+    Matrix<DType>& operator+=(const DType);
+    Matrix<DType>  operator+(const DType);
+    Matrix<DType>& operator+=(const Matrix<DType>&);
+    Matrix<DType>  operator+(const Matrix<DType>&);
 
-    Matrix<DType>& operator-=(DType);
-    Matrix<DType>  operator-(DType);
-    Matrix<DType>& operator-=(Matrix<DType>&);
-    Matrix<DType>  operator-(Matrix<DType>&);
+    Matrix<DType>& operator-=(const DType);
+    Matrix<DType>  operator-(const DType);
+    Matrix<DType>& operator-=(const Matrix<DType>&);
+    Matrix<DType>  operator-(const Matrix<DType>&);
 
-    Matrix<DType>& operator*=(DType);
-    Matrix<DType>  operator*(DType);
-    Matrix<DType>& operator*=(Matrix<DType>&);
-    Matrix<DType>  operator*(Matrix<DType>&);
+    Matrix<DType>& operator*=(const DType);
+    Matrix<DType>  operator*(const DType);
+    Matrix<DType>& operator*=(const Matrix<DType>&);
+    Matrix<DType>  operator*(const Matrix<DType>&);
 
     ~Matrix();
 

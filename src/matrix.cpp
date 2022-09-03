@@ -77,7 +77,7 @@ Matrix<DType>::Matrix(DIMS... dims)
  * @retval the element of the matrix in index
  */
 template <typename DType>
-Matrix<DType>::Matrix(Matrix<DType>const& matrix_copy) {
+Matrix<DType>::Matrix(const Matrix<DType>& matrix_copy) {
     *this = matrix_copy;
 }
 
@@ -88,7 +88,7 @@ Matrix<DType>::~Matrix() {
 }
 
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator=(Matrix<DType>const& matrix_copy) {
+Matrix<DType>& Matrix<DType>::operator=(const Matrix<DType>& matrix_copy) {
     SHAPE       = matrix_copy.SHAPE;
     MATRIX_SIZE = matrix_copy.MATRIX_SIZE;
 
@@ -169,7 +169,7 @@ DType& Matrix<DType>::operator()(Index... index) {
  * @retval the same matrix whose elemets divided by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator/=(DType val) {
+Matrix<DType>& Matrix<DType>::operator/=(const DType val) {
 
     assert((val != 0) && 
         "The divisor cannot be zero!");
@@ -207,7 +207,7 @@ Matrix<DType>& Matrix<DType>::operator/=(DType val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator/(DType val) {
+Matrix<DType> Matrix<DType>::operator/(const DType val) {
     
     assert((val != 0) && 
         "The divisor cannot be zero!");
@@ -242,7 +242,7 @@ Matrix<DType> Matrix<DType>::operator/(DType val) {
  * @retval the same matrix whose elemets are increased by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator+=(DType val) {
+Matrix<DType>& Matrix<DType>::operator+=(const DType val) {
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] += val;
 
@@ -275,7 +275,7 @@ Matrix<DType>& Matrix<DType>::operator+=(DType val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator+(DType val) {
+Matrix<DType> Matrix<DType>::operator+(const DType val) {
     Matrix<DType> RESULT(*this);
     RESULT += val;
     
@@ -310,7 +310,7 @@ Matrix<DType> Matrix<DType>::operator+(DType val) {
  * @retval the same matrix whose elemets are added to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator+=(Matrix<DType>& A) {
+Matrix<DType>& Matrix<DType>::operator+=(const Matrix<DType>& A) {
     
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
@@ -353,7 +353,7 @@ Matrix<DType>& Matrix<DType>::operator+=(Matrix<DType>& A) {
  * @retval the new matrix whose elemets are added to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator+(Matrix<DType>& A) {
+Matrix<DType> Matrix<DType>::operator+(const Matrix<DType>& A) {
     
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
@@ -392,7 +392,7 @@ Matrix<DType> Matrix<DType>::operator+(Matrix<DType>& A) {
  * @retval the same matrix whose elemets are decreased by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator-=(DType val) { 
+Matrix<DType>& Matrix<DType>::operator-=(const DType val) { 
 
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] -= val;
@@ -426,7 +426,7 @@ Matrix<DType>& Matrix<DType>::operator-=(DType val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator-(DType val) {
+Matrix<DType> Matrix<DType>::operator-(const DType val) {
     
     Matrix<DType> RESULT(*this);
     RESULT -= val;
@@ -462,7 +462,7 @@ Matrix<DType> Matrix<DType>::operator-(DType val) {
  * @retval the same matrix whose elemets are substracted to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator-=(Matrix<DType>& A) {
+Matrix<DType>& Matrix<DType>::operator-=(const Matrix<DType>& A) {
 
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
@@ -507,7 +507,7 @@ Matrix<DType>& Matrix<DType>::operator-=(Matrix<DType>& A) {
  * @retval the new matrix whose elemets are substracted to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator-(Matrix<DType>& A) {
+Matrix<DType> Matrix<DType>::operator-(const Matrix<DType>& A) {
 
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
@@ -546,7 +546,7 @@ Matrix<DType> Matrix<DType>::operator-(Matrix<DType>& A) {
  * @retval the same matrix whose elemets are multiplicator by parameter val
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator*=(DType val) {
+Matrix<DType>& Matrix<DType>::operator*=(const DType val) {
 
     for (int i = 0; i < MATRIX_SIZE; i++)
         MATRIX[i] *= val;
@@ -580,7 +580,7 @@ Matrix<DType>& Matrix<DType>::operator*=(DType val) {
  * the elements of the matrix
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator*(DType val) {
+Matrix<DType> Matrix<DType>::operator*(const DType val) {
 
     Matrix<DType> RESULT(*this);
     RESULT *= val;
@@ -617,7 +617,7 @@ Matrix<DType> Matrix<DType>::operator*(DType val) {
  * @retval the new matrix whose elemets are multiplied to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType>& Matrix<DType>::operator*=(Matrix<DType>& A) {
+Matrix<DType>& Matrix<DType>::operator*=(const Matrix<DType>& A) {
 
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
@@ -661,7 +661,7 @@ Matrix<DType>& Matrix<DType>::operator*=(Matrix<DType>& A) {
  * @retval the new matrix whose elemets are multiplied to another matrix elementwisely.
  */
 template <typename DType>
-Matrix<DType> Matrix<DType>::operator*(Matrix<DType>& A) {
+Matrix<DType> Matrix<DType>::operator*(const Matrix<DType>& A) {
 
     assert((SHAPE.size() == A.SHAPE.size()) &&
         "The dimensions of the matrices must be same.");
