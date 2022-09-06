@@ -8,43 +8,46 @@ template <typename DType>
 class Matrix {
 
 template <typename T> 
-friend Matrix<T> sigmoid(Matrix<T>&);
+friend Matrix<T> sigmoid(const Matrix<T>&);
 
 template <typename T> 
-friend Matrix<T> exp(Matrix<T>&);
+friend Matrix<T> exp(const Matrix<T>&);
 
 template <typename T> 
-friend Matrix<T> tanh(Matrix<T>&);
+friend Matrix<T> tanh(const Matrix<T>&);
 
 template <typename T, typename... DIMS>
-friend Matrix<T> zeros(DIMS ...);
+friend Matrix<T> zeros(const DIMS ...);
 
 template <typename T, typename... DIMS>
-friend Matrix<T> ones(DIMS ...);
+friend Matrix<T> ones(const DIMS ...);
 
 template <typename T, typename... DIMS>
-friend Matrix<T> random(DIMS ...);
+friend Matrix<T> random(const DIMS ...);
 
 template <typename T>
-friend void reshape(Matrix<T>&, std::vector<int>);
+friend void reshape(Matrix<T>&, const std::vector<int>);
 
 template <typename T>
-friend Matrix<T> squeeze(Matrix<T>);
+friend Matrix<T> squeeze(const Matrix<T>);
 
 template <typename T>
-friend Matrix<T> identity(int);
+friend Matrix<T> identity(const int);
 
 public:
 
-    Matrix<DType>(Matrix<DType>const&);
+    Matrix<DType>(const Matrix<DType>&);
 
     template <typename... DIMS>
-    Matrix<DType>(DIMS...);
+    Matrix<DType>(const DIMS&...);
 
     template <typename... Index>
-    DType& operator()(Index...);
+    auto& operator()(const Index&...);
 
-    Matrix<DType>& operator=(Matrix<DType>const&);
+    template <typename... Index>
+    auto operator()(const Index&...) const;
+
+    Matrix<DType>& operator=(const Matrix<DType>&);
 
     Matrix<DType>& operator/=(const DType);
     Matrix<DType>  operator/(const DType);
@@ -66,9 +69,9 @@ public:
 
     ~Matrix();
 
-    std::vector<int> get_shape();
-    void print_shape();
-    int get_matrix_size();
+    std::vector<int> get_shape() const;
+    void print_shape() const;
+    int get_matrix_size() const;
 private:
     std::vector<int> SHAPE; 
     int MATRIX_SIZE;
@@ -76,46 +79,46 @@ private:
 };
 
 template <typename DType> 
-Matrix<DType> dot(Matrix<DType>, Matrix<DType>);
+Matrix<DType> dot(const Matrix<DType>&, const Matrix<DType>&);
 
 template <typename DType> 
-Matrix<DType> sigmoid(Matrix<DType>&);
+Matrix<DType> sigmoid(const Matrix<DType>&);
 
 template <typename DType> 
-Matrix<DType> exp(Matrix<DType>&);
+Matrix<DType> exp(const Matrix<DType>&);
 
 template <typename DType> 
-Matrix<DType> tanh(Matrix<DType>&);
+Matrix<DType> tanh(const Matrix<DType>&);
 
 template <typename DType, typename... DIMS>
-Matrix<DType> zeros(DIMS...);
+Matrix<DType> zeros(const DIMS...);
 
 template <typename DType, typename... DIMS>
-Matrix<DType> ones(DIMS...);
+Matrix<DType> ones(const DIMS...);
 
 template <typename DType, typename... DIMS>
-Matrix<DType> random(DIMS...);
+Matrix<DType> random(const DIMS...);
 
 template <typename DType>
-void reshape(Matrix<DType>&, std::vector<int>);
+void reshape(Matrix<DType>&, const std::vector<int>);
 
 template <typename DType> 
-Matrix<DType> squeeze(Matrix<DType>);
+Matrix<DType> squeeze(const Matrix<DType>);
 
 template <typename DType>
-Matrix<DType> identity(int);
+Matrix<DType> identity(const int);
 
 template <typename DType>
-void swap_rows(Matrix<DType>&, int, int);
+void swap_rows(Matrix<DType>&, const int, const int);
 
 template <typename DType>
-void replace_rows(Matrix<DType>&, int, int, double);
+void replace_rows(Matrix<DType>&, const int, const int, const double);
 
 template <typename DType>
-void scale_row(Matrix<DType>&, int, int);
+void scale_row(Matrix<DType>&, const int, const int);
 
 template <typename DType>
-Matrix<DType> transpoze(Matrix<DType>);
+Matrix<DType> transpoze(const Matrix<DType>);
 
 } // end of Matrix namespace
 

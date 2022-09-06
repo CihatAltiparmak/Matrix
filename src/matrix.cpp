@@ -41,7 +41,7 @@ namespace Matrix {
 
 template <typename DType>
 template <typename... DIMS>
-Matrix<DType>::Matrix(DIMS... dims)
+Matrix<DType>::Matrix(const DIMS&... dims)
 {
     SHAPE = {dims...};
 
@@ -125,7 +125,30 @@ Matrix<DType>& Matrix<DType>::operator=(const Matrix<DType>& matrix_copy) {
  */
 template <typename DType>
 template <typename... Index>
-DType& Matrix<DType>::operator()(Index... index) {
+auto& Matrix<DType>::operator()(const Index&... index) {
+ 
+    assert(sizeof...(index) == SHAPE.size() && 
+        "The number of index parameters must be same as the matrix' shape!");
+
+    std::vector<int> __index = {index...};
+  
+    int dp = 1;  // dynamic programming tricks
+    int real_index = 0; 
+
+    for (int i = SHAPE.size() - 1; i >= 0; i--) { 
+        real_index += dp * __index[i];
+        dp *= SHAPE[i];
+    }
+
+    assert(real_index < MATRIX_SIZE &&
+        "Out of bounds!");
+
+    return MATRIX[real_index];
+}
+
+template <typename DType>
+template <typename... Index>
+auto Matrix<DType>::operator()(const Index&... index) const{
  
     assert(sizeof...(index) == SHAPE.size() && 
         "The number of index parameters must be same as the matrix' shape!");
@@ -689,17 +712,17 @@ Matrix<DType> Matrix<DType>::operator*(const Matrix<DType>& A) {
  * @retval the shape of the matrix
  */
 template <typename DType>
-std::vector<int> Matrix<DType>::get_shape(){
+std::vector<int> Matrix<DType>::get_shape() const{
     return SHAPE;
 }
 
 template <typename DType>
-int Matrix<DType>::get_matrix_size() {
+int Matrix<DType>::get_matrix_size() const{
     return MATRIX_SIZE;
 }
 
 template <typename DType>
-void Matrix<DType>::print_shape() {
+void Matrix<DType>::print_shape() const{
     std::cout << "(";
     for (auto v : SHAPE)
         std::cout << v << ", ";
@@ -742,7 +765,7 @@ void Matrix<DType>::print_shape() {
  * @retval the AB matrix (AB presents matrix multiplication).
  */
 template <typename DType>
-Matrix<DType> dot(Matrix<DType> A, Matrix<DType> B) {
+Matrix<DType> dot(const Matrix<DType>& A, const Matrix<DType>& B) {
 
     auto a_shape = A.get_shape();
     auto b_shape = B.get_shape();
@@ -788,7 +811,7 @@ Matrix<DType> dot(Matrix<DType> A, Matrix<DType> B) {
  * @retval the result matrix
  */
 template <typename DType>
-Matrix<DType> sigmoid(Matrix<DType>& A) {
+Matrix<DType> sigmoid(const Matrix<DType>& A) {
 
     assert((std::is_same<DType, double>::value) && 
         "DType must be double!");
@@ -831,7 +854,7 @@ Matrix<DType> sigmoid(Matrix<DType>& A) {
  * @retval the result matrix
  */
 template <typename DType>
-Matrix<DType> exp(Matrix<DType>& A) {
+Matrix<DType> exp(const Matrix<DType>& A) {
 
     assert((std::is_same<DType, double>::value) && 
         "DType must be double!");
@@ -872,7 +895,7 @@ Matrix<DType> exp(Matrix<DType>& A) {
  * @retval the result matrix
  */
 template <typename DType>
-Matrix<DType> tanh(Matrix<DType>& A) {
+Matrix<DType> tanh(const Matrix<DType>& A) {
 
     assert((std::is_same<DType, double>::value) && 
         "DType must be double!");
@@ -899,7 +922,7 @@ Matrix<DType> tanh(Matrix<DType>& A) {
  * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
-Matrix<DType> zeros(DIMS... dims) {
+Matrix<DType> zeros(const DIMS... dims) {
     Matrix<DType> RESULT(dims...);
     
     for (int i = 0; i < RESULT.MATRIX_SIZE; i++)
@@ -917,7 +940,7 @@ Matrix<DType> zeros(DIMS... dims) {
  * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
-Matrix<DType> ones(DIMS... dims) {
+Matrix<DType> ones(const DIMS... dims) {
     Matrix<DType> RESULT(dims...);
     
     for (int i = 0; i < RESULT.MATRIX_SIZE; i++)
@@ -935,7 +958,7 @@ Matrix<DType> ones(DIMS... dims) {
  * @retval the result matrix
  */
 template <typename DType, typename... DIMS>
-Matrix<DType> random(DIMS... dims) {
+Matrix<DType> random(const DIMS... dims) {
     Matrix<DType> RESULT(dims...);
    
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -960,7 +983,7 @@ Matrix<DType> random(DIMS... dims) {
  * @retval None
  */
 template <typename DType>
-void reshape(Matrix<DType>& A, std::vector<int> dims) {
+void reshape(Matrix<DType>& A, const std::vector<int> dims) {
     int __size = 1;
 
     for (int i = 0; i < dims.size(); i++) {
@@ -996,7 +1019,7 @@ void reshape(Matrix<DType>& A, std::vector<int> dims) {
  * @return the squeezed function
  */
 template <typename DType>
-Matrix<DType> squeeze(Matrix<DType> A) {
+Matrix<DType> squeeze(const Matrix<DType> A) {
     Matrix<DType> B(A);
 
     std::vector<int> new_dims;
@@ -1020,7 +1043,7 @@ Matrix<DType> squeeze(Matrix<DType> A) {
  * @retval the result matrix
  */
 template <typename DType>
-Matrix<DType> identity(int N) {
+Matrix<DType> identity(const int N) {
     Matrix<DType> I = zeros<DType>(N, N);
 
     for (int i = 0; i < N; i++) 
@@ -1030,7 +1053,7 @@ Matrix<DType> identity(int N) {
 }
 
 template <typename DType>
-void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
+void swap_rows(Matrix<DType>& A, const int first_row, const int second_row) {
     auto __shape = A.get_shape();
     int N = __shape[0];
     int M = __shape[1];
@@ -1046,7 +1069,7 @@ void swap_rows(Matrix<DType>& A, int first_row, int second_row) {
 }
 
 template <typename DType>
-void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar) {
+void replace_rows(Matrix<DType>& A, const int first_row, const int second_row, const double scalar) {
     auto __shape = A.get_shape();
     int N = __shape[0];
     int M = __shape[1];
@@ -1062,7 +1085,7 @@ void replace_rows(Matrix<DType>& A, int first_row, int second_row, double scalar
 }
 
 template <typename DType>
-void scale_row(Matrix<DType>& A, int row, double scalar) {
+void scale_row(Matrix<DType>& A, const int row, const double scalar) {
     
     auto __shape = A.get_shape();
     int N = __shape[0];
@@ -1076,7 +1099,7 @@ void scale_row(Matrix<DType>& A, int row, double scalar) {
 }
 
 template <typename DType>
-Matrix<DType> transpoze(Matrix<DType> A) {
+Matrix<DType> transpoze(const Matrix<DType> A) {
 
     int N = A.get_shape()[0];
     int M = A.get_shape()[1];
