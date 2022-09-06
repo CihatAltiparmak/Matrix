@@ -62,7 +62,7 @@ Vector<DType>::Vector(Matrix<DType> A)
 }
 
 template <typename DType>
-double vector_dot(Vector<DType> u, Vector<DType> v) {
+double vector_dot(const Vector<DType> u, const Vector<DType> v) {
 
     auto u_shape = u.get_shape();
     auto v_shape = v.get_shape();
@@ -82,7 +82,7 @@ double vector_dot(Vector<DType> u, Vector<DType> v) {
 }
 
 template <typename DType>
-std::vector<Vector<DType>> to_column_vectors(Matrix<DType> A) {
+std::vector<Vector<DType>> to_column_vectors(const Matrix<DType> A) {
     // assert 0 <= K < N
 
     auto __shape = A.get_shape();
@@ -102,7 +102,7 @@ std::vector<Vector<DType>> to_column_vectors(Matrix<DType> A) {
 }
 
 template <typename DType>
-std::vector<Vector<DType>> to_row_vectors(Matrix<DType> A) {
+std::vector<Vector<DType>> to_row_vectors(const Matrix<DType> A) {
     // assert 0 <= K < N
 
     auto __shape = A.get_shape();
@@ -122,7 +122,7 @@ std::vector<Vector<DType>> to_row_vectors(Matrix<DType> A) {
 }
 
 template <typename DType>
-Matrix<DType> from_column_vectors(std::vector<Vector<DType>> column_vectors) {
+Matrix<DType> from_column_vectors(const std::vector<Vector<DType>> column_vectors) {
     // assert vector shapes are same format and column_vectors is not empty
     int N = column_vectors[0].get_matrix_size();
     int M = column_vectors.size();
@@ -136,7 +136,7 @@ Matrix<DType> from_column_vectors(std::vector<Vector<DType>> column_vectors) {
 }
 
 template <typename DType>
-Matrix<DType> from_row_vectors(std::vector<Vector<DType>> row_vectors) {
+Matrix<DType> from_row_vectors(const std::vector<Vector<DType>> row_vectors) {
     // assert vector shapes are same format and row_vectors is not empty
     int N = row_vectors.size();
     int M = row_vectors[0].get_matrix_size();
