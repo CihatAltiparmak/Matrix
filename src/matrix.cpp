@@ -784,6 +784,11 @@ Matrix<DType> dot(const Matrix<DType>& A, const Matrix<DType>& B) {
     return AB;
 }
 
+template <typename DType, typename... MATRICES>
+Matrix<DType> dot(const Matrix<DType>& first_matrix, const MATRICES&... matrices) {
+    return dot(first_matrix, dot(matrices...));
+}
+
 /*
  * The function that returns new matrix which gets by applying 
  * sigmoid function to the elemets of the old matrix. 

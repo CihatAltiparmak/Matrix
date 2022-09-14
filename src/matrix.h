@@ -81,6 +81,9 @@ private:
 template <typename DType> 
 Matrix<DType> dot(const Matrix<DType>&, const Matrix<DType>&);
 
+template <typename DType, typename... MATRICES>
+Matrix<DType> dot(const Matrix<DType>&, const MATRICES&...);
+
 template <typename DType> 
 Matrix<DType> sigmoid(const Matrix<DType>&);
 
